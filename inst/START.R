@@ -10,14 +10,15 @@ require(reshape)
 options(stringsAsFactors=F)
 
 # Set working directory and path
-setwd("C:/Users/DEMPSEYD/Desktop/SS_data/")
-path <- file.path("C:/Users/DEMPSEYD/Desktop/SS_data") 
+# this might change when package is built, i.e., can point to somewhere NOT the package directory
+setwd("C:/Users/DEMPSEYD/Desktop/SSdata/")
+path <- file.path("C:/Users/DEMPSEYD/Desktop/SSdata") 
 
 # Set username and password for accessing databases
 channel <- odbcConnect("ptran", uid="GOMEZC", pwd="Branch22")
 
-source(paste(path,'/R/amc helpers.R',sep=""))
-loadfun(path) # sources all functions in path/R
+source(paste(path,'/R/loadfun.R',sep=""))
+loadfun(path) # sources all functions in path/R (don't think I need this once the package is working)
 
 
 # Step 2: Enter years and areas for which to extract data -----------------
@@ -31,17 +32,16 @@ areas.land <- c('nafo','shelf','esswss')
 # These data are stored in path/data and then called in Step 4
 
 # Biomass & Abundance data (q-adjusted post-strat)
-extractBiomass(path = path, s.year = start.year, e.year = end.year, areas= areas.RV)
+#extractBiomass(path = path, s.year = start.year, e.year = end.year, areas = areas.RV)
 
 # Landings data 
-extractLandings(path) 
+#extractLandings(path) 
 
 
 # Step 4: Format Data for marindicators -----------------------------------
 compileDataframes(path = path, s.year = start.year, e.year = end.year, 
                  areas.RV = areas.RV, areas.land = areas.land, csv = FALSE, Rdata = TRUE)
   
-
 
 
 

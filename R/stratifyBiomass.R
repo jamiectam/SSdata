@@ -57,7 +57,7 @@ stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, 
         da <- dat[dat$BIOMASS!=0,]	#remove the zeros as all
         
         for(j in 1:length(areas)) {
-          out <- defineGroups(ou,gp=areas[j])
+          out <- defineAreas(ou,area=areas[j])
           ins <- which(out$SPECIES==60 & out$STRAT>469)
           out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
           out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj
@@ -66,7 +66,7 @@ stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, 
           out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=out,FUN=sum)
           sp <- unique(out$SPECIES)
           #add in not qd species
-          dat <- defineGroups(da,gp=areas[j])
+          dat <- defineAreas(da,area=areas[j])
           dat <- dat[!dat$SPECIES %in% sp,]
           dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=dat,FUN=sum)
           #combine two files
@@ -110,8 +110,8 @@ stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, 
         dat <- dat[!dat$FLEN==-99,]
         
         for(j in 1:length(areas)) {
-          out <- defineGroups(dat,gp=areas[j])
-          out99 <- defineGroups(dat99,gp=areas[j])
+          out <- defineAreas(dat,area=areas[j])
+          out99 <- defineAreas(dat99,area=areas[j])
           ins <- which(out$SPECIES==60 & out$STRAT>469)
           out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
           out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj

@@ -1,11 +1,43 @@
-biomassData <- function(s.strat = 440, e.strat = 495, s.year = 1970, e.year = 2015,
-                        path, vessel.correction = T) {
+#'@title Extracts fishery independent data
+#'@description This function extracts annual length-based, aggregated, and
+#'  length-weight data for the Scotian Shelf. Code can be cleaned up
+#'
+#'  Herring biomass/abundance is treated separately from the other species.
+#'@param path Filepath indicating where to create folders to store the extracted
+#'  data.
+#'@param s.strat Stratum for which to begin data extraction. Default is
+#'  \code{s.strat = 440}.
+#'@param e.strat Stratum for which to end data extraction. Default is
+#'  \code{e.strat = 495}.
+#'@param s.year Year for which to begin data extraction.
+#'@param e.year Year for which to end data extraction.
+#'@param vessel.correction Logical value indicating whether to apply vessel
+#'  correction to calculation of BIOMASS and ABUNDANCE. Default is
+#'  vessel.correction = TRUE.
+#'@return This function creates directories to store extracted data. Within each
+#'  folder, a separate RData file stores the data for each year from s.year to
+#'  e.year, for strata from s.strat to e.strat.
+#'
+#'  path/data/aggregate stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at
+#'  the set level.
+#'
+#'  path/data/length stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at the
+#'  set level for lengths in 1 cm increments. Used in. . .
+#'
+#'  path/data/lenwgt stores fish length at weight.
+#'
+#'@references Modified code from AC's ExtractIndicators/R/biomassData.R
+
+
+
+biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
+                        vessel.correction = TRUE) {
  
    # use.length.data.for.biomass is the aggregate from the qcorr script ie sum(flen) data
   yr <- s.year:e.year
   
   #get 4X herring data
-  her <- herring.at.Length(path1=path)
+  her <- herringAtLength(path1=path)
   
   for(i in 1:length(yr)) {
    
@@ -150,5 +182,5 @@ biomassData <- function(s.strat = 440, e.strat = 495, s.year = 1970, e.year = 20
     rm(dat, w)
   }
 
-# End for(i in 1:length(yr)) ----------------------------------------------
+
 }					        

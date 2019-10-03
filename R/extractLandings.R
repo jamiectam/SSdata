@@ -65,7 +65,7 @@ extractLandings <- function(path) {
     
     return(data)
   }
-  print('Make sure you change the year at line 60 in this function or you will only get up to 2018')
+  print('Make sure you change the year at line 60 in R/extractLandings.R or you will only get up to 2018')
   
   ndat <- NAFO()
   zdat <- ZIF()
@@ -88,7 +88,8 @@ extractLandings <- function(path) {
   fp = file.path(path,'data','landings')
   dir.create(fp, recursive=T, showWarnings=F)
   
-  save(land,file=file.path(fp,"landings.RData"))
+  landings <- land
+  save(landings, file = file.path(fp,"landings.RData"))
   #land
 }   
 

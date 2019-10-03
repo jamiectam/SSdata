@@ -22,22 +22,24 @@ LWdataframe <- function(path, s.year, e.year, areas,
     
   }
   
-  # now use the defineGroups function to identify which spatial scale each strata belongs to
+  # now use the defineAreas function to identify which spatial scale each strata belongs to
   # i.e., add "ID" column to data
-  #source("C:/RProjects/ExtractIndicators/R/defineGroups.R")
+  #source("C:/RProjects/ExtractIndicators/R/defineAreas.R")
   #areas =  c('strat','nafo','esswss','shelf')
   
   for(j in 1:length(areas)){
     
     areas.j = areas[j]
-    allData_ID = defineGroups(allData, gp = areas[j])
+    allData_ID = defineAreas(allData, area = areas[j])
+    allData_ID$STRAT <- NULL
+    lw <- allData_ID
     
     dir.create(paste(path, "/output/LengthWeight", sep = ""), recursive = T, showWarnings = F)
     path.output <- paste(path, "/output/LengthWeight/", areas.j, "_LengthWeight", sep = "")
     
-    if(csv) write.csv(allData_ID, file = paste(path.output, ".csv", sep=""), row.names = FALSE)
+    if(csv) write.csv(lw, file = paste(path.output, ".csv", sep=""), row.names = FALSE)
   
-    if(Rdata) save(allData_ID, file = paste(path.output, ".RData", sep=""))
+    if(Rdata) save(lw, file = paste(path.output, ".RData", sep=""))
     
   }
   

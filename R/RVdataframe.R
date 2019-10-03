@@ -40,10 +40,10 @@ RVdataframe <- function(path, s.year, e.year, areas, lengthBased,
       path.output <- paste(path, "/output/RV/notlengthBased/", areas.j, "_notlengthBased", sep = "")
     }
     
-    
-    if(csv) write.csv(allData, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
+    RVdata <- allData
+    if(csv) write.csv(RVdata, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
     # save data as an R .RData file as well
-    if(Rdata) save(allData, file = paste(path.output, ".RData", sep=""))
+    if(Rdata) save(RVdata, file = paste(path.output, ".RData", sep=""))
   
   }
   
