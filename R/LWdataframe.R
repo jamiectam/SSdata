@@ -56,4 +56,6 @@ LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
     
   }
   
+  print("length-weight dataframes exported")
+  
 }

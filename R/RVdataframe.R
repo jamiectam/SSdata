@@ -82,4 +82,6 @@ RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
   
   }
   
+  print("survey dataframes exported")
+  
 }

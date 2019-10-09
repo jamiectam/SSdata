@@ -61,6 +61,8 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), csv = TRUE
     if(csv) write.csv(land, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
     
     if(rdata) save(land, file = paste(path.output, ".RData", sep=""))
+    
+    print("landings dataframe exported")
 
   }
 }
