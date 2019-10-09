@@ -1,10 +1,33 @@
-#--Indicators for spera project October 31, 2012 02:25:51 PM 
-#
-#
- 
-#biomass q adju using medians from harley and myers tech report
- 
-biomass_q_adj<-function(species, year, area='4VWX', fun_group = NA, q = 0,
+#'@title Applies length-based q-adjusted to biomass and abundance data (before
+#'  stratification)
+#'@description I'm not sure if I need this function since we are doing postStat.
+#'  But it sets up the extraction of the biomass/abundance data in
+#'  biomassData(). Note from AC: biomass q adju using medians from harley and
+#'  myers tech report
+
+#'@param species Species from catchability coefficients table
+#'  (\code{catch_coef}) in \code{biomassData()}.
+#'@param year Year to calculate the data
+#'@param area Default is \code{area = "4VWX"}
+#'@param fun_group Functional group from catchability coefficients table
+#'  (\code{catch_coef}) in \code{biomassData()}.
+#'@param q Initial q-correction from catchability coefficients table
+#'  (\code{catch_coef}) in \code{biomassData()}.
+#'@param len_corr Initial length correction from catchability coefficients table
+#'  (\code{catch_coef}) in \code{biomassData()}.
+#'@param nums Not really sure what this does.
+#'@param a.b.plot Option to make length-weight plot.
+#'@param by.set Return data by set. (?) Default is \code{by.set = TRUE}.
+#'@param by.length Return data by set. (?) Default is \code{by.length = TRUE}.
+#'@return Returns the q-ajusted biomass and abundance to ]code{bioamssData()}.
+#'@references Modified code from AC's ExtractIndicators/R/qBiomass (function
+#'  \code{biomass_q_adj()})
+#'@importFrom stats coef
+#'@importFrom graphics curve
+#'@importFrom graphics title
+#'@importFrom RODBC sqlQuery
+
+qBiomass <- function(species, year, area = "4VWX", fun_group = NA, q = 0,
                         len_corr = 1, nums = F, a.b.plot = F, by.set = T, by.length=T) {
 	#Checking to see if there is enough data to even bother with this species
 
@@ -169,42 +192,5 @@ biomass_q_adj<-function(species, year, area='4VWX', fun_group = NA, q = 0,
 	}
 	
 
-
-#########################################################
-#########################################################
-########invertebrate biomass script######################
-#########################################################
-
-inv.biomass <- function (species, region, season,syear, eyear=syear) {
-	Biomass <-0
-	if(grepl('4VSW',toupper(region))) {bstrat=443; estrat=466}
-	if(grepl('4X',toupper(region))) {bstrat=470; estrat=495}
-	if(grepl('4VW',toupper(region))) {bstrat=440; estrat=466}
-	if(grepl('4VWX',toupper(region))) {bstrat=440; estrat=495}
-	if(grepl('4VN',toupper(region))) {bstrat=440; estrat=442}
-	if(grepl('S',toupper(season))) {seasons<-paste(c('06','07','08'),collapse="','"); strat.details<-sqlQuery(channel,paste("select s.strat, (area/(1.75*41/6080.2)) , s.strat  from groundfish.gsstratum s, mflib.gsmgt g where s.strat=g.strat and g.unit in ('",region,"') and s.strat between '440' and '495' order by s.strat;",sep=""))}
-	if(grepl('W',toupper(season))) {seasons<-paste(c('01','02','03','04'),collapse="','"); strat.details<-sqlQuery(channel,paste("select s.strat, (area/(1.75*41/6080.2)) , s.strat  from groundfish.gsstratum s, mflib.gsmgt g where s.strat=g.strat and g.unit in ('",region,"') and s.strat between '401' and '411' order by s.strat;",sep=""))}	
-
-	#null data gets put to zero with invert biomass prior to 1999
-		data <- sqlQuery(channel, paste("select tot.mission,tot.setno,tot.strat,nvl(wgt,0) wgt 
-			from (select i.mission,i.strat, i.setno, sum(totwgt) wgt from groundfish. gsinf i, groundfish.gscat c where
-		i.mission=c.mission and i.setno=c.setno and spec in (",species,") and to_char(sdate,'mm') in ('",seasons,"') and strat in (select distinct strat from mflib.gsmgt where unit in ('",region,"'))
-		and to_char(sdate,'yyyy') between ",syear," and ",eyear," and type=1
-		group by i.mission, i.strat,i.setno) fish,
-		(select i.mission,i.strat, i.setno from groundfish. gsinf i where
-		 to_char(sdate,'mm') in ('",seasons,"') and strat in (select distinct strat from mflib.gsmgt where unit in ('",region,"'))
-		and to_char(sdate,'yyyy') between ",syear," and ",eyear," and type=1) tot
-		where tot.mission=fish.mission(+) and tot.setno=fish.setno(+);",sep=""))
-		
-	if(nrow(data)>1) {
-		strat.means <- aggregate(data$WGT, by=list(data$STRAT), FUN=mean)
-		strat.n <- aggregate(data$WGT, by=list(data$STRAT), FUN=length)
-		strat.wgts <- data.frame(Group.1=strat.details[,1],Wgt=strat.details[,2]/sum(strat.details[,2]), Trawl.Units= strat.details[,2])
-		strata.data <- merge(merge(strat.means,strat.n,by='Group.1'),strat.wgts,by='Group.1')
-		names(strata.data) <-c('Strat','Mean','NSets','AreaWt','Trawl.Units')
-		Biomass <- data.frame(Species=species,Year=syear, Area= region, BiomassT=sum(strata.data$Mean*strata.data$Trawl.Units)/1000)
-		}
-		return(Biomass)
-		}
 
 

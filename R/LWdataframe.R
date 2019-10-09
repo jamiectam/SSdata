@@ -1,6 +1,19 @@
-
-LWdataframe <- function(path, s.year, e.year, areas, 
-                        csv = TRUE, Rdata = TRUE){
+#'@title Formats length-weight data for use in the \code{marindicators} package
+#'@description This function imports data from path/data/lenwgt adds column
+#'  \code{YEAR}, and attaches labels for the spatial scales of interest
+#'  ("shelf", "esswss", "nafo", "strat") in column \code{ID}.
+#'@inheritParams RVdataframe
+#'@param path The filepath to the data folder created by
+#'  \code{extractBiomass()}.
+#'@return This function creates a directory path/output/LengthWeight to save the
+#'  exported data. A separate .RData file (area_LengthWeigth.RData, object name
+#'  \code{lw}) and/or .csv file (area_LengthWeight.csv) is exported for each area.
+#'@references Original code by DD.
+#'@importFrom utils write.csv
+#'@export
+#'
+LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"),
+                        csv = TRUE, rdata = TRUE){
   
   years <- c(s.year:e.year)
   allData <- NULL
@@ -39,7 +52,7 @@ LWdataframe <- function(path, s.year, e.year, areas,
     
     if(csv) write.csv(lw, file = paste(path.output, ".csv", sep=""), row.names = FALSE)
   
-    if(Rdata) save(lw, file = paste(path.output, ".RData", sep=""))
+    if(rdata) save(lw, file = paste(path.output, ".RData", sep=""))
     
   }
   

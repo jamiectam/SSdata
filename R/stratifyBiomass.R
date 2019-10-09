@@ -1,6 +1,33 @@
-stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, areas) {
- 
-   st.weights  <- read.csv(file.path(path,"extra info","stratweights.csv"))
+#'@title Stratifies biomass and abundance estimates and then applies
+#'  catchability correction factor (q)
+#'@description clean up this code
+#'@inheritParams biomassData
+#'@param path Filepath indicating where to create folder to store the stratified
+#'  data.
+#'@param areas Areas for which to stratify the fishery independent survey data.
+#'  A separate dataframe will be exported for each area. Default is \code{areas
+#'  = c("shelf", "esswss", "nafo", "strat")}.
+#'@param lengthBased Logical parameter indicating whether to return stratified
+#'  length-based \code{lengthBased = TRUE} or not length-based data
+#'  \code{lengthBased = FALSE}
+#'@return This function creates directories to store stratified data.
+#'
+#'  path/data/stratified/lengthbased has a folder for each area. Within each
+#'  folder is a .RData file for each year from s.year to e.year called
+#'  year.RData (object name \code{out}). \code{out} has 5 columns:
+#'  \code{SPECIES} , \code{FLEN}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'
+#'  path/data/stratified/notlengthbased has a folder for each area. Within each
+#'  folder is a .RData file for each year from s.year to e.year called
+#'  year.RData (object name \code{out}). \code{out} has 4 columns:
+#'  \code{SPECIES}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'@references Modified code from AC's ExtractIndicators/R/stratifyBiomass.R
+
+
+stratifyBiomass <- function(path, s.year, e.year, 
+                            lengthBased, areas = c("shelf", "esswss", "nafo", "strat")) {
+  
+  st.weights  <- read.csv(file.path(path,"extra info","stratweights.csv"))
   
   out.fp <- file.path(path,"data","stratified")
   yrs <- s.year:e.year
@@ -16,65 +43,65 @@ stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, 
       
       #using either the biomass from q corrected data or from the survey gscat tables (!biomass.data.from.qcorr is the same as vdc)	
       fna 	<- paste(path,"/data/aggregate/num_biom",yrs[i],".RData",sep="")
-     
+      
       load(fna)
       dat$SPECIES <- as.numeric(dat$SPECIES)
       #Begin Stratified Estimates
-      if(any(dat$YEAR<1970)) { dat <- dat[-which(dat$YEAR<1970),] }
+      if(any(dat$YEAR<1970))  dat <- dat[-which(dat$YEAR<1970),] 
       
-      if(qadjPostStrat) {
-        #	u <- paste(u,'qadjpoststratqadj',sep="")		
-        fna <- paste(path,"/data/length/num_biom_at_length",yrs[i],".RData",sep="")
-        load(fna)
+      
+      #	u <- paste(u,'qadjpoststratqadj',sep="")		
+      fna <- paste(path,"/data/length/num_biom_at_length",yrs[i],".RData",sep="")
+      load(fna)
+      
+      #Make Stratified Estimates of species to be q'd
+      if(any(out$YEAR<1970))  out <- out[-which(out$YEAR<1970),] 
+      #remove the q's at set level
+      out <- out[,-which(names(out) %in% c('QBIOMASS','QABUNDANCE'))]
+      #strata means
+      out <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES+FLEN,data=out,FUN=mean)	
+      
+      #add in the strata weightings for the appropriate groups
+      out <- merge(out,st.weights,by='STRAT',all.x=T)	#combine to ensure only sampled strat are included
+      out$BIOMASS <- out$TUNITS*out$BIOMASS			
+      out$ABUNDANCE <- out$TUNITS*out$ABUNDANCE	
+      out$SPECIES <- as.numeric(out$SPECIES)
+      
+      ou <- out[out$BIOMASS>0,]
+      
+      #--stratify the no q'd species
+      dat <- dat[,-which(names(dat) %in% c('BIOMASS','ABUNDANCE'))]
+      names(dat)[which(names(dat) %in% c('QBIOMASS'))] <- c('BIOMASS')
+      names(dat)[which(names(dat) %in% c('QABUNDANCE'))] <- c('ABUNDANCE')
+      #strata means				
+      dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES,data=dat,FUN=mean)	
+      #add in the strata weightings for the appropriate groups
+      dat <- merge(dat,st.weights,by='STRAT',all.x=T)	
+      #strata totals				
+      dat$BIOMASS 	<- dat$BIOMASS*dat$TUNITS
+      dat$ABUNDANCE 	<- dat$ABUNDANCE*dat$TUNITS
+      dat$SPECIES 	<- as.numeric(dat$SPECIES)
+      da <- dat[dat$BIOMASS!=0,]	#remove the zeros as all
+      
+      for(j in 1:length(areas)) {
+        out <- defineAreas(ou,area=areas[j])
+        ins <- which(out$SPECIES==60 & out$STRAT>469)
+        out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
+        out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj
+        out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out,FUN=sum)
+        out <- qBiomassPostStrat(out, path = path)
+        out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=out,FUN=sum)
+        sp <- unique(out$SPECIES)
+        #add in not qd species
+        dat <- defineAreas(da,area=areas[j])
+        dat <- dat[!dat$SPECIES %in% sp,]
+        dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=dat,FUN=sum)
+        #combine two files
+        out <- rbind(out, dat)
+        fp1 <- file.path(out.fp, u, areas[j])
+        dir.create(fp1, recursive = T, showWarnings = F)
+        save(out, file = file.path(fp1, paste(yrs[i], ".RData",sep="")))
         
-        #Make Stratified Estimates of species to be q'd
-        if(any(out$YEAR<1970)) { out <- out[-which(out$YEAR<1970),] }
-        #remove the q's at set level
-        out <- out[,-which(names(out) %in% c('QBIOMASS','QABUNDANCE'))]
-        #strata means
-        out <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES+FLEN,data=out,FUN=mean)	
-        
-        #add in the strata weightings for the appropriate groups
-        out <- merge(out,st.weights,by='STRAT',all.x=T)	#combine to ensure only sampled strat are included
-        out$BIOMASS <- out$TUNITS*out$BIOMASS			
-        out$ABUNDANCE <- out$TUNITS*out$ABUNDANCE	
-        out$SPECIES <- as.numeric(out$SPECIES)
-        
-        ou <- out[out$BIOMASS>0,]
-        
-        #--stratify the no q'd species
-        dat <- dat[,-which(names(dat) %in% c('BIOMASS','ABUNDANCE'))]
-        names(dat)[which(names(dat) %in% c('QBIOMASS'))] <- c('BIOMASS')
-        names(dat)[which(names(dat) %in% c('QABUNDANCE'))] <- c('ABUNDANCE')
-        #strata means				
-        dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES,data=dat,FUN=mean)	
-        #add in the strata weightings for the appropriate groups
-        dat <- merge(dat,st.weights,by='STRAT',all.x=T)	
-        #strata totals				
-        dat$BIOMASS 	<- dat$BIOMASS*dat$TUNITS
-        dat$ABUNDANCE 	<- dat$ABUNDANCE*dat$TUNITS
-        dat$SPECIES 	<- as.numeric(dat$SPECIES)
-        da <- dat[dat$BIOMASS!=0,]	#remove the zeros as all
-        
-        for(j in 1:length(areas)) {
-          out <- defineAreas(ou,area=areas[j])
-          ins <- which(out$SPECIES==60 & out$STRAT>469)
-          out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
-          out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj
-          out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out,FUN=sum)
-          out <- qBiomassPostStrat(out, path = path)
-          out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=out,FUN=sum)
-          sp <- unique(out$SPECIES)
-          #add in not qd species
-          dat <- defineAreas(da,area=areas[j])
-          dat <- dat[!dat$SPECIES %in% sp,]
-          dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID,data=dat,FUN=sum)
-          #combine two files
-          out <- rbind(out, dat)
-          fp1 <- file.path(out.fp, u, areas[j])
-          dir.create(fp1, recursive = T, showWarnings = F)
-          save(out, file = file.path(fp1, paste(yrs[i], ".RData",sep="")))
-        }
       }
     }
     if(lengthBased) {
@@ -97,35 +124,34 @@ stratifyBiomass <- function(path, s.year, e.year, lengthBased, qadjPostStrat=T, 
       
       #Make Stratified Estimates
       if(any(dat$YEAR<1970)) { dat <- dat[-which(dat$YEAR<1970),] }
-
-      if(qadjPostStrat) {	
-        #u <- paste(u,'qadjpoststratqadj',sep="")		
-        dat <- dat[,-which(names(dat) %in% c('QBIOMASS','QABUNDANCE'))]
-        dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES+FLEN,data=dat,FUN=mean)	
-        dat <- merge(dat,st.weights,by='STRAT',all.x=T)	#combine to ensure only sampled strat are included
-        dat$BIOMASS <- dat$TUNITS*dat$BIOMASS			
-        dat$ABUNDANCE <- dat$TUNITS*dat$ABUNDANCE	
-        dat$SPECIES <- as.numeric(dat$SPECIES)
-        dat99 <- dat[dat$FLEN==-99,]
-        dat <- dat[!dat$FLEN==-99,]
-        
-        for(j in 1:length(areas)) {
-          out <- defineAreas(dat,area=areas[j])
-          out99 <- defineAreas(dat99,area=areas[j])
-          ins <- which(out$SPECIES==60 & out$STRAT>469)
-          out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
-          out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj
-          out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out,FUN=sum)
-          out <- out[out$BIOMASS>0,]
-          out99 <- out99[out99$BIOMASS>0,]
-          out99 <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out99,FUN=sum)
-          out <- qBiomassPostStrat(out,path=path)
-          out <- rbind(out, out99)
-          fp1 <- file.path(out.fp, u, areas[j])
-          dir.create(fp1, recursive=T, showWarnings=F)
-          save(out, file = file.path(fp1, paste(yrs[i],".RData",sep="")))
-        }		
-      }
+      
+      
+      #u <- paste(u,'qadjpoststratqadj',sep="")		
+      dat <- dat[,-which(names(dat) %in% c('QBIOMASS','QABUNDANCE'))]
+      dat <- aggregate(cbind(BIOMASS,ABUNDANCE)~YEAR+STRAT+SPECIES+FLEN,data=dat,FUN=mean)	
+      dat <- merge(dat,st.weights,by='STRAT',all.x=T)	#combine to ensure only sampled strat are included
+      dat$BIOMASS <- dat$TUNITS*dat$BIOMASS			
+      dat$ABUNDANCE <- dat$TUNITS*dat$ABUNDANCE	
+      dat$SPECIES <- as.numeric(dat$SPECIES)
+      dat99 <- dat[dat$FLEN==-99,]
+      dat <- dat[!dat$FLEN==-99,]
+      
+      for(j in 1:length(areas)) {
+        out <- defineAreas(dat,area=areas[j])
+        out99 <- defineAreas(dat99,area=areas[j])
+        ins <- which(out$SPECIES==60 & out$STRAT>469)
+        out[ins,'BIOMASS'] <- out[ins,'BIOMASS']*0.025 #down weight 4X by qadj
+        out[ins,'ABUNDANCE'] <- out[ins,'ABUNDANCE']*0.025 #down weight 4X by qadj
+        out <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out,FUN=sum)
+        out <- out[out$BIOMASS>0,]
+        out99 <- out99[out99$BIOMASS>0,]
+        out99 <- aggregate(cbind(BIOMASS,ABUNDANCE)~SPECIES+ID+FLEN,data=out99,FUN=sum)
+        out <- qBiomassPostStrat(out,path=path)
+        out <- rbind(out, out99)
+        fp1 <- file.path(out.fp, u, areas[j])
+        dir.create(fp1, recursive=T, showWarnings=F)
+        save(out, file = file.path(fp1, paste(yrs[i],".RData",sep="")))
+      }		
     }
   }
 }

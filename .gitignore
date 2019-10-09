@@ -2,3 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
+data/
+*.shp
+*.shx
+*.lock
+*.prj
+*.dbf
+*.csv
+*.pdf
+*.zip

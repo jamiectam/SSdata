@@ -14,6 +14,7 @@
 #'@param vessel.correction Logical value indicating whether to apply vessel
 #'  correction to calculation of BIOMASS and ABUNDANCE. Default is
 #'  vessel.correction = TRUE.
+
 #'@return This function creates directories to store extracted data. Within each
 #'  folder, a separate RData file stores the data for each year from s.year to
 #'  e.year, for strata from s.strat to e.strat.
@@ -27,8 +28,10 @@
 #'  path/data/lenwgt stores fish length at weight.
 #'
 #'@references Modified code from AC's ExtractIndicators/R/biomassData.R
-
-
+#'@export
+#'@importFrom stats aggregate
+#'@importFrom reshape melt
+#'@importFrom RODBC sqlQuery
 
 biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
                         vessel.correction = TRUE) {
@@ -45,14 +48,14 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
 
     # Table with "SPECIES", "FUNGROUP", "Q", "LENCORR" (88 observations)
     # This the same as qa in qBiomassPostStrat (which is extra info/qcorrinfo.csv)
-    abc <- sqlQuery(channel,paste('select * from gomezc.indiseas_catchability_coeffs'))
-    abc[abc=='NULL'] <- NA
+    catch_coefs <- sqlQuery(channel, paste('select * from gomezc.indiseas_catchability_coeffs'))
+    catch_coefs[catch_coefs=='NULL'] <- NA
     outputs <- list()
     m = 0
     
-    for (j in 1:nrow(abc)) {
-      outputs[[j]] <- biomass_q_adj(species=abc[j,1], fun_group=abc[j,2], 
-                                    q=abc[j,3],len_corr=abc[j,4], year=yr[i]) # default of biomass_q_adj: by.length=T
+    for (j in 1:nrow(catch_coefs)) {
+      outputs[[j]] <- qBiomass(species=catch_coefs[j,1], fun_group=catch_coefs[j,2], 
+                                    q=catch_coefs[j,3],len_corr=catch_coefs[j,4], year=yr[i]) # default of biomass_q_adj: by.length=T
     }
     out <- as.data.frame(do.call(rbind, outputs))
     
@@ -167,9 +170,6 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     fna <- paste(path,"/data/aggregate/",sep="")
     dir.create(fna, recursive = T, showWarnings = F)
     save(dat, file = paste(fna, "num_biom", yr[i], ".RData", sep=""))
-
-    print(yr[i])
-    
 
 # Length-Weight data ------------------------------------------------------
     

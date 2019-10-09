@@ -1,7 +1,42 @@
-# adds YEAR col
+#'@title Formats fishery independey survey data for use in the
+#'  \code{marindicators} package
+#'@description This function imports data for each area from
+#'  path/data/stratified/lengthbased or path/data/stratified/notlengthbased,
+#'  adds column \code{YEAR}, and binds all years together.
+#'@inheritParams biomassData
+#'@param path The filepath to the data folder created by
+#'  \code{extractBiomass()}.
+#'@param areas Areas of interest. A separate dataframe will be exported for each
+#'  area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.
+#'@param lengthBased Logical parameter indicating whether to format length-based
+#'  \code{lengthBased = TRUE} or not length-based data  \code{lengthBased =
+#'  FALSE}.
+#'@param csv Logical value indicating whether to export dataframe as a .csv
+#'  file. Default is \code{csv = TRUE}.
+#'@param rdata Logical value indicating whether to export dataframe as a .RData
+#'  file. Default is \code{rdata = TRUE}.
+#'@return This function creates a directory to save the exported data.
+#'
+#'  If \code{lengthBased} is \code{TRUE}: path/output/RV/lengthBased and stores
+#'  the dataframe in area_lengthBased.RData (object name is \code{RVdata})
+#'  and/or area_RVdata.csv. The dataframe has 6 columns: \code{ID} (the area
+#'  ID), \code{YEAR}, \code{SPECIES} (the research vessel species code),
+#'  \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'
+#'  OR
+#'
+#'  If \code{lengthBased} is \code{FALSE}: path/output/RV/notlengthBased and
+#'  stores the dataframe in area_notlengthBased.RData (object name is
+#'  \code{RVdata}) and/or area_RVdata.csv. The dataframe has 5 columns:
+#'  \code{ID} (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel
+#'  species code), \code{BIOMASS}, and \code{ABUNDANCE}.
+#'
+#'@references Original code by DD.
+#'@importFrom utils write.csv
+#'@export
 
-RVdataframe <- function(path, s.year, e.year, areas, lengthBased, 
-                     csv = TRUE, Rdata = TRUE){
+RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"), 
+                        lengthBased, csv = TRUE, rdata = TRUE){
   
   years <- c(s.year:e.year)
   
@@ -43,7 +78,7 @@ RVdataframe <- function(path, s.year, e.year, areas, lengthBased,
     RVdata <- allData
     if(csv) write.csv(RVdata, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
     # save data as an R .RData file as well
-    if(Rdata) save(RVdata, file = paste(path.output, ".RData", sep=""))
+    if(rdata) save(RVdata, file = paste(path.output, ".RData", sep=""))
   
   }
   

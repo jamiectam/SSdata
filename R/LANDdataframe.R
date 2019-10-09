@@ -1,5 +1,35 @@
+#'@title Formats commercial landings data for use in the \code{marindicators}
+#'  package
+#'@description This function imports data from
+#'  path/data/landings.landings.RData, attaches labels for the spatial scales of
+#'  interest ("shelf", "esswss", and "nafo") in column \code{ID}, and replaces
+#'  commercial species codes with the research vessel species codes.
+#'@details Area ID's are assiged from the file path//Extra
+#'  Info/landingsgroupings.csv.
+#'
+#'  Commercial and research vessel species codes are matched from the file
+#'  path/Extra Info/SpeciesCodes.csv. the function accounts for the proportion
+#'  of landings of species with more than one RV code but one commercial code.
+#'@param path The filepath to the data folder created by
+#'  \code{extractLandings()}.
+#'@param areas Areas of interest. A separate landings dataframe will be exported
+#'  for each area. Default is \code{areas = c("shelf", "esswss", "nafo")}
+#'@param csv Logical value indicating whether to export landings dataframe as a
+#'  .csv file. Default is \code{csv = TRUE}.
+#'@param rdata Logical value indicating whether to export landings dataframe as
+#'  a .RData file. Default is \code{rdata = TRUE}.
+#'@return This function creates a directory output/Landings and stores the
+#'  landings dataframe in area_land.RData (object name is \code{land}) and/or
+#'  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
+#'  \code{YEAR}, \code{SPECIES} (the research vessel species code) and
+#'  \code{CATCH}.
+#'@references Original code by DD.
+#'@importFrom utils write.csv
+#'@importFrom utils read.csv
+#'@export
 
-LANDdataframe <- function(path, areas, csv = TRUE, Rdata = TRUE){
+
+LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), csv = TRUE, rdata = TRUE){
   
   # Import data
   load(paste(path, "/data/landings/landings.RData", sep=""))    # load landings data 
@@ -30,7 +60,7 @@ LANDdataframe <- function(path, areas, csv = TRUE, Rdata = TRUE){
     # save data as an Excel .csv file
     if(csv) write.csv(land, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
     
-    if(Rdata) save(land, file = paste(path.output, ".RData", sep=""))
+    if(rdata) save(land, file = paste(path.output, ".RData", sep=""))
 
   }
 }

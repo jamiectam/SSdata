@@ -1,14 +1,18 @@
 #'@title Exports fishery independent and commercial landings data
 #'@description Exports fishery independent and commercial landings
 #'  dataframes in a format suitable for the \code{marindicators} package.
-
+#'@inheritParams biomassData
 #'@param path Filepath indicating where to create folders to store the output.
 #'@param s.year Year for which to begin data compilation.
-#'@param s.year Year for which to end data compilation.
+#'@param e.year Year for which to end data compilation.
 #'@param areas.RV Areas for which to compile fishery independent data. Default
-#'  is \code{areas.RV = c("strat", "nafo", "shelf", "esswss")}.
-#'@param areas.RV Areas for which to compile commercial landings data. Default
-#'  is \code{areas.RV = c("nafo", "shelf", "esswss")}.
+#'  is \code{areas.RV = c("strat", "nafo", "esswss", "shelf")}.
+#'@param areas.land Areas for which to compile commercial landings data. Default
+#'  is \code{areas.RV = c("nafo", "esswss", "shelf")}.
+#'@param csv Logical value indicating whether to export dataframe as a .csv
+#'  file. Default is \code{csv = TRUE}.
+#'@param rdata Logical value indicating whether to export dataframe as a .RData
+#'  file. Default is \code{rdata = TRUE}.
 #'@return The output is saved in directories created by the function:
 #'
 #'  path/output/Landings: An Rdata file of annual landings data with columns
@@ -36,8 +40,7 @@
 
 
 compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo", "shelf", "esswss"), 
-                              areas.land, 
-                              csv = F, Rdata = TRUE){
+                              areas.land, csv = FALSE, rdata = TRUE){
   
   # Extract and stratify fishery independent data
   extractBiomass(path = path, s.year = s.year, e.year = e.year, areas = areas.RV)
@@ -46,16 +49,16 @@ compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo"
   
   # Format fishery independent data
   RVdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, lengthBased = FALSE, csv = csv, Rdata = Rdata)
+              areas = areas.RV, lengthBased = FALSE, csv = csv, rdata = rdata)
   
   RVdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, lengthBased = TRUE, csv = csv, Rdata = Rdata)
+              areas = areas.RV, lengthBased = TRUE, csv = csv, rdata = rdata)
   
   LWdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, csv = csv, Rdata = Rdata)
+              areas = areas.RV, csv = csv, rdata = rdata)
   
   
   # Format landings data and use RV species code!
-  LANDdataframe(path = path, areas = areas.land, csv = csv, Rdata = Rdata)
+  LANDdataframe(path = path, areas = areas.land, csv = csv, rdata = rdata)
   
 }

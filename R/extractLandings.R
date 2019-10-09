@@ -1,3 +1,20 @@
+#'@title Extracts commercial landings data from historic and current databases
+#'@description Extracts commercial landings data from NAFO (1968 - 1985), ZIF
+#'  (1986 - 2002) and MARFIS (2003 - present) databases.
+#'@param path  Filepath indicating where to create the folder to store the
+#'  extracted data.
+#'@return This function creates directory path/data/landings and stores file
+#'  landings.Rdata (object name is \code{landings}). \code{landings} has 14
+#'  columns: \code{SPECIES}, \code{ALLNAMES}, \code{YEAR}, \code{NAFO_UNIT},
+#'  \code{CATCH}, and 9 landings groups.
+#'@references Modified code from AC's ExtractIndicators/R/getLandings.R
+#'@importFrom RODBC sqlQuery
+#'@importFrom RODBC odbcConnect
+#'@importFrom RODBC odbcClose
+#'@export
+
+
+
 extractLandings <- function(path) {
   
   

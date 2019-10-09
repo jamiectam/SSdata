@@ -4,7 +4,8 @@
 \alias{extractBiomass}
 \title{Calls functions to extract and stratify fishery independent data}
 \usage{
-extractBiomass(path, s.year, e.year, areas)
+extractBiomass(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
+  "strat"))
 }
 \arguments{
 \item{path}{Filepath indicating where to create folders to store the extracted
@@ -13,6 +14,9 @@ data.}
 \item{s.year}{Year for which to begin data extraction.}
 
 \item{e.year}{Year for which to end data extraction.}
+
+\item{areas}{Areas of interest. A separate dataframe will be extracted for each
+area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.}
 }
 \value{
 This function creates directories to store extracted data. Within each
@@ -20,20 +24,29 @@ This function creates directories to store extracted data. Within each
  e.year, for strata from s.strat to e.strat.
 
  From \code{biomassData()}:
- path/data/aggregate stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at
- the set level. 
- 
- path/data/length stores BIOMASS, ABUNDANCE, QBIOMASS and
- QABUNDANCE at the set level for lengths in 1 cm increments. Used in. . .
- 
- path/data/lenwgt stores fish length at weight.
- 
- From \code{stratifyBiomass()}:
- path/data/stratfied/lengthBased stores the length-based stratified,
- q-adjusted (post-stratification) BIOMASS and ABUNDANCE.
- 
- path/data/stratfied/notlengthBased stores the not length-based stratified,
- q-adjusted (post-stratification) BIOMASS and ABUNDANCE.
+
+ path/data/aggregate stores files num_biomYEAR.RData (object name is \code{dat}).
+ \code{dat} has 9 columns: \code{MISSION}, \code{SETNO}, \code{SPECIES},
+ \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS}
+ and \code{QABUNDANCE}.
+
+ path/data/length stores files num_biom_at_lengthYEAR.RData (object name is
+ \code{out}). \code{out} has 10 columns: \code{MISSION}, \code{SETNO}, \code{SPECIES},
+ \code{FLEN}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
+ \code{QBIOMASS} and \code{QABUNDANCE}.
+
+ path/data/lenwgt stores file lw2015.RData (object name wt). wt has 4
+ columns:  \code{STRAT}, \code{SPECIES}, \code{FLEN}, and \code{FWT}.
+
+ From \code{stratifyBiomass()}: path/data/stratfied/lengthBased/area stores
+ the length-based stratified, q-adjusted (post-stratification) biomass and
+ abundance in files YEAR.Rdata (object name \code{out}). \code{out} has 5 columns:
+ \code{SPECIES}, \code{ID}, \code{FLEN}, \code{BIOMASS}, \code{ABUNDANCE}.
+
+ path/data/stratfied/notlengthBased/area stores the not length-based
+ stratified, q-adjusted (post-stratification) biomass and abundance in files
+ YEAR.Rdata (object name \code{out}). \code{out} has 4 columns: \code{SPECIES}, \code{ID},
+ \code{BIOMASS}, \code{ABUNDANCE}.
 }
 \description{
 Calls\code{biomassData()} and \code{stratifyBiomass()}. For more

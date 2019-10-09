@@ -1,7 +1,14 @@
+#'@title Not really sure what this does
+#'@description Documenting the function so I can build the package.
+#'@param path1  Filepath indicating where extra info folder is stored
+#'@references Modified code from AC's ExtractIndicators/R/VPAherring.R
+#'@importFrom RODBC sqlQuery
+
+
 #for the herring at length information
 #fixed September 06, 2013 02:39:55 PM  There were problems with allocating missing lengths in previous script now called VPAherringLengthOld
-	herringAtLength <- function(path1=p) {
-		dat <- sqlQuery(channel,paste("select i.mission,i.setno,i.strat,slat YDDMMSS, slong*-1 XDDMMSS,to_char(sdate,'yyyy') year,flen, c.spec,clen*nvl(decode(totwgt,0,1,totwgt),1)/nvl(decode(sampwgt,0,1,sampwgt),1)*1.75/dist Abundance from 
+	herringAtLength <- function(path1) {
+		dat <- sqlQuery(channel, paste("select i.mission,i.setno,i.strat,slat YDDMMSS, slong*-1 XDDMMSS,to_char(sdate,'yyyy') year,flen, c.spec,clen*nvl(decode(totwgt,0,1,totwgt),1)/nvl(decode(sampwgt,0,1,sampwgt),1)*1.75/dist Abundance from 
 						groundfish.gsinf i, groundfish.gscat c, groundfish.gsdet d where i.mission=c.mission and i.setno=c.setno and i.mission=d.mission and i.setno=d.setno and c.spec=d.spec
 						and to_char(sdate,'yyyy') between 1970 and 2015 and to_char(sdate,'mm') in ('06','07','08') and  strat between '470' and '495' and type=1 and c.spec=60",sep=""))
 		#not using the herring at length as age length keys cover more sizes than are observed in the survey

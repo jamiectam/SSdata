@@ -1,4 +1,12 @@
-herringAggregate <- function(path1=p) {
+#'@title Not really sure what this does
+#'@description Documenting the function so I can build the package.
+#'@param path1  Filepath indicating where extra info folder is stored
+#'@references Modified code from AC's ExtractIndicators/R/VPAherring.R
+#' @importFrom RODBC sqlQuery
+
+
+
+herringAggregate <- function(path1) {
 	#her <- sqlQuery(channel,paste('select year,area,spec,abundance*1000 abundance,biomass*1000 biomass,wt from indiseas_4X_herring'))
 	  her = read.csv(file.path(path1,'extra info','4xherringbiomassDec2015.csv'))
 	  her$ABUNDANCE = her$ABUNDANCE*1000

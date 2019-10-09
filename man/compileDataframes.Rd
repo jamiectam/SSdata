@@ -5,20 +5,26 @@
 \title{Exports fishery independent and commercial landings data}
 \usage{
 compileDataframes(path, s.year, e.year, areas.RV = c("strat", "nafo",
-  "shelf", "esswss"), areas.land, csv = F, Rdata = TRUE)
+  "shelf", "esswss"), areas.land, csv = FALSE, rdata = TRUE)
 }
 \arguments{
 \item{path}{Filepath indicating where to create folders to store the output.}
 
 \item{s.year}{Year for which to begin data compilation.}
 
+\item{e.year}{Year for which to end data compilation.}
+
 \item{areas.RV}{Areas for which to compile fishery independent data. Default
-is \code{areas.RV = c("strat", "nafo", "shelf", "esswss")}.}
+is \code{areas.RV = c("strat", "nafo", "esswss", "shelf")}.}
 
-\item{s.year}{Year for which to end data compilation.}
+\item{areas.land}{Areas for which to compile commercial landings data. Default
+is \code{areas.RV = c("nafo", "esswss", "shelf")}.}
 
-\item{areas.RV}{Areas for which to compile commercial landings data. Default
-is \code{areas.RV = c("nafo", "shelf", "esswss")}.}
+\item{csv}{Logical value indicating whether to export dataframe as a .csv
+file. Default is \code{csv = TRUE}.}
+
+\item{rdata}{Logical value indicating whether to export dataframe as a .RData
+file. Default is \code{rdata = TRUE}.}
 }
 \value{
 The output is saved in directories created by the function:
