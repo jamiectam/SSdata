@@ -29,11 +29,10 @@ stratifyBiomass <- function(path, s.year, e.year,
   
   st.weights  <- read.csv(file.path(path,"extra info","stratweights.csv"))
   
-  out.fp <- file.path(path,"data","stratified")
-  yrs <- s.year:e.year
+  out.fp <- file.path(path, "data", "stratified")    # where to export data: path/data/stratified
+  yrs <- s.year:e.year                               # years to stratify  
   
   for(i in 1:length(yrs)) {
-    print(yrs[i])
     #trawlable units differnce (fanning 1985)
     if(yrs[i]<=1981) st.weights$TUNITS 	<- st.weights$AREA/((35./6080.2)*1.75)
     if(yrs[i]>1981) st.weights$TUNITS 	<- st.weights$AREA/((41./6080.2)*1.75)
@@ -42,15 +41,13 @@ stratifyBiomass <- function(path, s.year, e.year,
       u <- 'notlengthbased'
       
       #using either the biomass from q corrected data or from the survey gscat tables (!biomass.data.from.qcorr is the same as vdc)	
-      fna 	<- paste(path,"/data/aggregate/num_biom",yrs[i],".RData",sep="")
+      fna 	<- paste(path,"/data/aggregate/num_biom",yrs[i],".RData",sep="")   # path to biomass data
+      load(fna)                                                                # load the data into an object called dat
+      dat$SPECIES <- as.numeric(dat$SPECIES)                                   # make sure species codes are numeric
       
-      load(fna)
-      dat$SPECIES <- as.numeric(dat$SPECIES)
       #Begin Stratified Estimates
-      if(any(dat$YEAR<1970))  dat <- dat[-which(dat$YEAR<1970),] 
+      if(any(dat$YEAR<1970))  dat <- dat[-which(dat$YEAR<1970),]               # remove years before 1970
       
-      
-      #	u <- paste(u,'qadjpoststratqadj',sep="")		
       fna <- paste(path,"/data/length/num_biom_at_length",yrs[i],".RData",sep="")
       load(fna)
       
