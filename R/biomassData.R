@@ -130,67 +130,68 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
       }
     }
     
+    #  } # end of loop over years
+    
+    if(unique(dat$YEAR)==2012 & any(!is.finite(dat$ABUNDANCE))) dat[which(!is.finite(dat$ABUNDANCE)),'ABUNDANCE'] <- 1
+    if(any(is.na(dat[,c('BIOMASS','ABUNDANCE')]))) browser()
+    
+    dat[dat$BIOMASS==0 ,'BIOMASS']<- 0.01	
+    dat[dat$ABUNDANCE==0 ,'ABUNDANCE']<- 1
+    
+    dat$QABUNDANCE <- dat$ABUNDANCE 
+    dat$QBIOMASS <- dat$BIOMASS
+    dat$SPECIES <- dat$SPEC
+    if(vessel.correction) dat <- vesselCorr(dat)
+    dat <- dat[,-which(names(dat)=='SPECIES')]
+    
+    #add in zero sets
+    extra.sets <- sqlQuery(channel,paste("select distinct i.mission,i.setno,i.strat,to_char(sdate,'yyyy') year from groundfish.gsinf i, nafo_strat sg where 
+			i.strat=sg.strat and to_char(sdate,'yyyy') =",yr[i]," and to_char(sdate,'mm') in ('06','07','08') and i.strat between '",s.strat,"' and '",e.strat,"' and type=1;",sep=""))
+    s <- unique(dat$SPEC)	
+    m <- matrix(0, nrow = dim(extra.sets)[1], ncol=length(s),
+                dimnames = list(c(1:nrow(extra.sets)), s))	
+    m <- cbind(extra.sets, m)
+    h <- melt(m, id = c("MISSION", "SETNO", "STRAT", "YEAR"))
+    names(h)[which(names(h) %in% c('variable','value'))]<- c('SPECIES','BIOMASS')
+    h$QBIOMASS <- h$QABUNDANCE <- h$MEAN_WT_FISH <- h$ABUNDANCE<-0
+    names(dat)[1] <- 'SPECIES'
+    
+    l <- rbind(dat, h, all = T)
+    
+    dat <- l[!duplicated(l[,c('MISSION','SETNO','SPECIES')], fromLast = F),]
+    
+    #add in the qadjusted data
+    dat1 <- dat
+    #use.length.data.for.biomass
+    #CHANGE October 31, 2013 11:36:51 AM  after discussion with AB wanted this to be the default for spera
+    w <- merge(dat, ag.out, by=c('MISSION','SETNO','STRAT','SPECIES','YEAR'), all.x = T)	
+    # Add columns for ABUNDANCE, QABUNDANCE, BIOMASS, and QBIOMASS
+    w$ABUNDANCE <- 0		
+    w$QABUNDANCE <- 0		
+    w$BIOMASS <- 0		
+    w$QBIOMASS <- 0		
+    # Fill in columns for ABUNDANCE, QABUNDANCE, BIOMASS, and QBIOMASS with appropriate data (???)
+    w$ABUNDANCE <- ifelse(is.na(w$ABUNDANCE.y), w$ABUNDANCE.x, w$ABUNDANCE.y)
+    w$BIOMASS <- ifelse(is.na(w$BIOMASS.y),w$BIOMASS.x,w$BIOMASS.y)
+    w$QABUNDANCE <- ifelse(is.na(w$QABUNDANCE.y) ,w$QABUNDANCE.x,w$QABUNDANCE.y)
+    w$QBIOMASS <- ifelse(is.na(w$QBIOMASS.y),w$QBIOMASS.x,w$QBIOMASS.y)
+    
+    dat <- w[,c('MISSION','SETNO','SPECIES','YEAR','STRAT','ABUNDANCE','BIOMASS','QABUNDANCE','QBIOMASS')]		
+    fna <- paste(path,"/data/aggregate/",sep="")
+    dir.create(fna, recursive = T, showWarnings = F)
+    save(dat, file = paste(fna, "num_biom", yr[i], ".RData", sep=""))
+    
+    # Length-Weight data ------------------------------------------------------
+    
+    fna <- file.path(path, "data", "lenwgt")
+    dir.create(fna, recursive = T, showWarnings = F)
+    wt <- sqlQuery(channel,paste("select distinct strat,spec species,flen,fwt from groundfish.gsinf i, groundfish.gsdet d where i.mission=d.mission and i.setno=d.setno and to_char(sdate,'yyyy') = ",yr[i]," and to_char(sdate,'mm') in ('06','07','08') and strat between '440' and '495' and fwt is not null and flen is not null;",sep=""))
+    save(wt,file=paste(fna,"/lw",yr[i],".Rdata",sep=""), compress=T)
+    
+    #end all species data w/no length
+    rm(dat, w)
   } # end of loop over years
   
-  if(unique(dat$YEAR)==2012 & any(!is.finite(dat$ABUNDANCE))) dat[which(!is.finite(dat$ABUNDANCE)),'ABUNDANCE'] <- 1
-  if(any(is.na(dat[,c('BIOMASS','ABUNDANCE')]))) browser()
-  
-  dat[dat$BIOMASS==0 ,'BIOMASS']<- 0.01	
-  dat[dat$ABUNDANCE==0 ,'ABUNDANCE']<- 1
-  
-  dat$QABUNDANCE <- dat$ABUNDANCE 
-  dat$QBIOMASS <- dat$BIOMASS
-  dat$SPECIES <- dat$SPEC
-  if(vessel.correction) dat <- vesselCorr(dat)
-  dat <- dat[,-which(names(dat)=='SPECIES')]
-  
-  #add in zero sets
-  extra.sets <- sqlQuery(channel,paste("select distinct i.mission,i.setno,i.strat,to_char(sdate,'yyyy') year from groundfish.gsinf i, nafo_strat sg where 
-			i.strat=sg.strat and to_char(sdate,'yyyy') =",yr[i]," and to_char(sdate,'mm') in ('06','07','08') and i.strat between '",s.strat,"' and '",e.strat,"' and type=1;",sep=""))
-  s <- unique(dat$SPEC)	
-  m <- matrix(0, nrow = dim(extra.sets)[1], ncol=length(s),
-              dimnames = list(c(1:nrow(extra.sets)), s))	
-  m <- cbind(extra.sets, m)
-  h <- melt(m, id = c("MISSION", "SETNO", "STRAT", "YEAR"))
-  names(h)[which(names(h) %in% c('variable','value'))]<- c('SPECIES','BIOMASS')
-  h$QBIOMASS <- h$QABUNDANCE <- h$MEAN_WT_FISH <- h$ABUNDANCE<-0
-  names(dat)[1] <- 'SPECIES'
-  
-  l <- rbind(dat, h, all = T)
-  
-  dat <- l[!duplicated(l[,c('MISSION','SETNO','SPECIES')], fromLast = F),]
-  
-  #add in the qadjusted data
-  dat1 <- dat
-  #use.length.data.for.biomass
-  #CHANGE October 31, 2013 11:36:51 AM  after discussion with AB wanted this to be the default for spera
-  w <- merge(dat, ag.out, by=c('MISSION','SETNO','STRAT','SPECIES','YEAR'), all.x = T)	
-  # Add columns for ABUNDANCE, QABUNDANCE, BIOMASS, and QBIOMASS
-  w$ABUNDANCE <- 0		
-  w$QABUNDANCE <- 0		
-  w$BIOMASS <- 0		
-  w$QBIOMASS <- 0		
-  # Fill in columns for ABUNDANCE, QABUNDANCE, BIOMASS, and QBIOMASS with appropriate data (???)
-  w$ABUNDANCE <- ifelse(is.na(w$ABUNDANCE.y), w$ABUNDANCE.x, w$ABUNDANCE.y)
-  w$BIOMASS <- ifelse(is.na(w$BIOMASS.y),w$BIOMASS.x,w$BIOMASS.y)
-  w$QABUNDANCE <- ifelse(is.na(w$QABUNDANCE.y) ,w$QABUNDANCE.x,w$QABUNDANCE.y)
-  w$QBIOMASS <- ifelse(is.na(w$QBIOMASS.y),w$QBIOMASS.x,w$QBIOMASS.y)
-  
-  dat <- w[,c('MISSION','SETNO','SPECIES','YEAR','STRAT','ABUNDANCE','BIOMASS','QABUNDANCE','QBIOMASS')]		
-  fna <- paste(path,"/data/aggregate/",sep="")
-  dir.create(fna, recursive = T, showWarnings = F)
-  save(dat, file = paste(fna, "num_biom", yr[i], ".RData", sep=""))
-  
-  # Length-Weight data ------------------------------------------------------
-  
-  fna <- file.path(path, "data", "lenwgt")
-  dir.create(fna, recursive = T, showWarnings = F)
-  wt <- sqlQuery(channel,paste("select distinct strat,spec species,flen,fwt from groundfish.gsinf i, groundfish.gsdet d where i.mission=d.mission and i.setno=d.setno and to_char(sdate,'yyyy') = ",yr[i]," and to_char(sdate,'mm') in ('06','07','08') and strat between '440' and '495' and fwt is not null and flen is not null;",sep=""))
-  save(wt,file=paste(fna,"/lw",yr[i],".Rdata",sep=""), compress=T)
-  
-  #end all species data w/no length
-  rm(dat, w)
-}
+} # end of function
 
 
-	        
