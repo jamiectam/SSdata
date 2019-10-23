@@ -193,4 +193,4 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
 }
 
 
-}					        
+	        
