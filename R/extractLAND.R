@@ -1,6 +1,7 @@
 #'@title Extracts commercial landings data from historic and current databases
 #'@description Extracts commercial landings data from NAFO (1968 - 1985), ZIF
 #'  (1986 - 2002) and MARFIS (2003 - present) databases.
+#'@inheritParams biomassData
 #'@param path  Filepath indicating where to create the folder to store the
 #'  extracted data.
 #'@return This function creates directory path/data/landings and stores file
@@ -13,10 +14,7 @@
 #'@importFrom RODBC odbcClose
 #'@export
 
-
-
-extractLAND <- function(path) {
-  
+extractLAND <- function(path, e.year) {
   
   NAFO <- function(area=paste("4VS","4VN","4X","4W",sep="','")) {
     y <- 1968:1985
@@ -24,9 +22,6 @@ extractLAND <- function(path) {
     channel.ca<-odbcConnect("ptran",uid="cooka",pwd="bzz7plf")
     
     for( i in 1:length(y)) {
-      #if(y[i]==1975) {
-      #change April 17, 2013 Funny landings stuff with subtrips in some years--changed to summary as we are not interested in subunits now
-      #fixed a join where one to many species names which was mucking things up
       out[[i]] <- sqlQuery(channel.ca,paste("select ",y[i]," year,description nafo_unit,species,sum(catch) catch 
 													from comland.nafo_summary a,comland.nafo_area_codes r
 													where a.area=r.area and upper(description) in ('",area,"') and year_of_activity = ",y[i],"
@@ -34,13 +29,10 @@ extractLAND <- function(path) {
     }				
     
     dat <- do.call(rbind, out)
-    
     return(dat)		
   }
   
-  
   #ZO  - 1986:2002
-  
   ZIF <- function (area=paste("4VS","4VN","4X","4W",sep="','")) {
     #match the zif data dictionary landings 
     channel.ca <- odbcConnect("ptran", uid="cooka", pwd="bzz7plf")
@@ -74,7 +66,7 @@ extractLAND <- function(path) {
     data <- sqlQuery(channel.ca,paste("select year_fished year,unit_area nafo_unit, marfis2allcodes species,sum(round(rnd_weight_kgs/1000,4)) catch
 	     						from mfd_obfmi.marfis_catch_effort d, gomezc.indiseas_marfis2allcodes a
 									where upper(nafo_div) in ('",area,"') and d.species_code=a.marfis
-	          						and year_fished between '2003' and '2018'
+	          						and year_fished between '2003' and ",e.year,"
 	          						and category_desc not in 'OTHER'
 	         			GROUP BY year_fished ,unit_area, marfis2allcodes
 	         	       ;",sep=""))
@@ -82,13 +74,12 @@ extractLAND <- function(path) {
     
     return(data)
   }
-  print('Make sure you change the year at line 60 in R/extractLandings.R or you will only get up to 2018')
   
   ndat <- NAFO()
   zdat <- ZIF()
   mdat <- MARFIS()
   
-  channel <- odbcConnect("ptran", uid="cooka", pwd="bzz7plf")
+  #channel <- odbcConnect("ptran", uid="cooka", pwd="bzz7plf")
   
   nam <- sqlQuery(channel,paste("select * from gomezc.indiseas_allcodes;"))
   names(nam)[1] <-'SPECIES'
