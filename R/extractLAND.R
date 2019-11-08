@@ -19,10 +19,9 @@ extractLAND <- function(path, e.year) {
   NAFO <- function(area=paste("4VS","4VN","4X","4W",sep="','")) {
     y <- 1968:1985
     out <- list()
-    channel.ca<-odbcConnect("ptran",uid="cooka",pwd="bzz7plf")
     
     for( i in 1:length(y)) {
-      out[[i]] <- sqlQuery(channel.ca,paste("select ",y[i]," year,description nafo_unit,species,sum(catch) catch 
+      out[[i]] <- sqlQuery(channel,paste("select ",y[i]," year,description nafo_unit,species,sum(catch) catch 
 													from comland.nafo_summary a,comland.nafo_area_codes r
 													where a.area=r.area and upper(description) in ('",area,"') and year_of_activity = ",y[i],"
 													group by ",y[i],",description, species",sep=""))
@@ -35,13 +34,11 @@ extractLAND <- function(path, e.year) {
   #ZO  - 1986:2002
   ZIF <- function (area=paste("4VS","4VN","4X","4W",sep="','")) {
     #match the zif data dictionary landings 
-    channel.ca <- odbcConnect("ptran", uid="cooka", pwd="bzz7plf")
-    #channel.ca <- odbcConnect("ptran", uid="GOMEZC", pwd="Branch22")
     
     y <- 1986:2002
     out <- list()
     for( i in 1:length(y)) {
-      out[[i]]<-sqlQuery(channel.ca,paste("select year,nafo_unit,zif2allcodes species,sum(wt) catch 
+      out[[i]]<-sqlQuery(channel,paste("select year,nafo_unit,zif2allcodes species,sum(wt) catch 
 													from (select ",y[i]," year,b.id, nafod,unit,nafo_unit,species_code,wt 
 													from (select catchers_recid||','||region_code||','||trip_num||','||sub_trip_num id,
 															year_of_activity,nafo_division_code nafod ,nafo_unit_area unit,nafo_division_code||nafo_unit_area nafo_unit
@@ -62,15 +59,16 @@ extractLAND <- function(path, e.year) {
   
   MARFIS <- function(area=paste("4V","4X","4W",sep="','")) {
     #match the vdc marfis landings
-    channel.ca<-odbcConnect("ptran",uid="cooka",pwd="bzz7plf")
-    data <- sqlQuery(channel.ca,paste("select year_fished year,unit_area nafo_unit, marfis2allcodes species,sum(round(rnd_weight_kgs/1000,4)) catch
+    
+    data <- sqlQuery(channel, paste("select year_fished year,unit_area nafo_unit, marfis2allcodes species,sum(round(rnd_weight_kgs/1000,4)) catch
 	     						from mfd_obfmi.marfis_catch_effort d, gomezc.indiseas_marfis2allcodes a
 									where upper(nafo_div) in ('",area,"') and d.species_code=a.marfis
 	          						and year_fished between '2003' and ",e.year,"
 	          						and category_desc not in 'OTHER'
 	         			GROUP BY year_fished ,unit_area, marfis2allcodes
 	         	       ;",sep=""))
-    odbcClose(channel.ca)
+    
+    odbcClose(channel)
     
     return(data)
   }
@@ -78,8 +76,6 @@ extractLAND <- function(path, e.year) {
   ndat <- NAFO()
   zdat <- ZIF()
   mdat <- MARFIS()
-  
-  #channel <- odbcConnect("ptran", uid="cooka", pwd="bzz7plf")
   
   nam <- sqlQuery(channel,paste("select * from gomezc.indiseas_allcodes;"))
   names(nam)[1] <-'SPECIES'
