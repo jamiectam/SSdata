@@ -6,7 +6,8 @@
  \code{marindicators} package}
 \usage{
 RVdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
-  "strat"), lengthBased, csv = TRUE, rdata = TRUE)
+  "strat"), lengthbased, qadjusted, update_RV = FALSE, csv = TRUE,
+  rdata = TRUE)
 }
 \arguments{
 \item{path}{The filepath to the data folder created by
@@ -19,9 +20,16 @@ RVdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
 \item{areas}{Areas of interest. A separate dataframe will be exported for each
 area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.}
 
-\item{lengthBased}{Logical parameter indicating whether to format length-based
-\code{lengthBased = TRUE} or not length-based data  \code{lengthBased =
+\item{lengthbased}{Logical parameter indicating whether to format length-based
+\code{lengthbased = TRUE} or not length-based data \code{lengthbased =
 FALSE}.}
+
+\item{qadjusted}{Logical parameter indicating whether}
+
+\item{update_RV}{Logical parameter indicating whether to run
+\code{extractRV()}. Extracting the abundance and biomass data for all years
+and areas is time consuming, so if data is already extracted, use the
+default \code{update_biomass = FALSE}.}
 
 \item{csv}{Logical value indicating whether to export dataframe as a .csv
 file. Default is \code{csv = TRUE}.}
@@ -30,21 +38,17 @@ file. Default is \code{csv = TRUE}.}
 file. Default is \code{rdata = TRUE}.}
 }
 \value{
-This function creates a directory to save the exported data.
+This function creates a directory path/output/RV to save the exported
+ data. In the RV folder is a folder for each entry in \code{area}. In each
+ area folder is a csv and/or Rdata file for the specified combination of
+ \code{lengthbased} and \code{qadjusted} (object name \code{RVdata}. These
+ files are formatted for the \code{marindicators} package.
 
- If \code{lengthBased} is \code{TRUE}: path/output/RV/lengthBased and stores
- the dataframe in area_lengthBased.RData (object name is \code{RVdata})
- and/or area_RVdata.csv. The dataframe has 6 columns: \code{ID} (the area
- ID), \code{YEAR}, \code{SPECIES} (the research vessel species code),
- \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
-
- OR
-
- If \code{lengthBased} is \code{FALSE}: path/output/RV/notlengthBased and
- stores the dataframe in area_notlengthBased.RData (object name is
- \code{RVdata}) and/or area_RVdata.csv. The dataframe has 5 columns:
- \code{ID} (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel
- species code), \code{BIOMASS}, and \code{ABUNDANCE}.
+ If \code{lengthbased = TRUE}, \code{RVdata} has 6 columns: \code{YEAR},
+ \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
+ 
+ If \code{lengthbased = FALSE}, \code{RVdata} has 5 columns: \code{YEAR},
+ \code{SPECIES}, \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
 }
 \description{
 This function imports data for each area from

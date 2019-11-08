@@ -4,7 +4,10 @@
 #'  ("shelf", "esswss", "nafo", "strat") in column \code{ID}.
 #'@inheritParams RVdataframe
 #'@param path The filepath to the data folder created by
-#'  \code{extractBiomass()}.
+#'  \code{extractLW()}.
+#'@param update_LW Logical parameter indicating whether to run
+#'  \code{extractLW()}. This can be time consuming, so if LW data is already extracted, use the default
+#'  \code{update_LW = FALSE}.
 #'@return This function creates a directory path/output/LengthWeight to save the
 #'  exported data. A separate .RData file (area_LengthWeigth.RData, object name
 #'  \code{lw}) and/or .csv file (area_LengthWeight.csv) is exported for each area.
@@ -13,7 +16,11 @@
 #'@export
 #'
 LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"),
-                        csv = TRUE, rdata = TRUE){
+                        update_LW = FALSE, csv = TRUE, rdata = TRUE){
+  
+  # Extract length-weight data if it hasn't been extracted already
+  if(update_LW) extractLW(path = path, s.year = s.year, e.year = e.year)
+  
   
   years <- c(s.year:e.year)
   allData <- NULL

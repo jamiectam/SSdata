@@ -22,25 +22,22 @@ data.}
 \item{e.year}{Year for which to end data extraction.}
 
 \item{vessel.correction}{Logical value indicating whether to apply vessel
-correction to calculation of BIOMASS and ABUNDANCE. Default is
-vessel.correction = TRUE.}
+correction to BIOMASS and ABUNDANCE. Default is vessel.correction = TRUE.}
 }
 \value{
 This function creates directories to store extracted data. Within each
- folder, a separate RData file stores the data for each year from s.year to
- e.year, for strata from s.strat to e.strat.
+ folder, data for each year is saved in a separate RData file.
 
  path/data/aggregate stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at
  the set level.
 
  path/data/length stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at the
- set level for lengths in 1 cm increments. Used in. . .
-
- path/data/lenwgt stores fish length at weight.
+ set level for LENGTH in 1 cm increments.
 }
 \description{
-This function extracts annual length-based, aggregated, and
- length-weight data for the Scotian Shelf. Code can be cleaned up
+Extracts annual length-based and not length-based
+ (i.e., aggregated over length) data for the Scotian Shelf. QABUNDANCE and
+ QBIOMASS are q-adjusted at the set level (i.e., before stratification).
 
  Herring biomass/abundance is treated separately from the other species.
 }

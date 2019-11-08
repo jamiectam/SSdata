@@ -8,35 +8,40 @@
 #'  \code{extractBiomass()}.
 #'@param areas Areas of interest. A separate dataframe will be exported for each
 #'  area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.
-#'@param lengthBased Logical parameter indicating whether to format length-based
-#'  \code{lengthBased = TRUE} or not length-based data  \code{lengthBased =
+#'@param lengthbased Logical parameter indicating whether to format length-based
+#'  \code{lengthbased = TRUE} or not length-based data \code{lengthbased =
 #'  FALSE}.
+#'@param qadjusted Logical parameter indicating whether
 #'@param csv Logical value indicating whether to export dataframe as a .csv
 #'  file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export dataframe as a .RData
 #'  file. Default is \code{rdata = TRUE}.
-#'@return This function creates a directory to save the exported data.
+#'@param update_RV Logical parameter indicating whether to run
+#'  \code{extractRV()}. Extracting the abundance and biomass data for all years
+#'  and areas is time consuming, so if data is already extracted, use the
+#'  default \code{update_biomass = FALSE}.
+#'@return This function creates a directory path/output/RV to save the exported
+#'  data. In the RV folder is a folder for each entry in \code{area}. In each
+#'  area folder is a csv and/or Rdata file for the specified combination of
+#'  \code{lengthbased} and \code{qadjusted} (object name \code{RVdata}. These
+#'  files are formatted for the \code{marindicators} package.
 #'
-#'  If \code{lengthBased} is \code{TRUE}: path/output/RV/lengthBased and stores
-#'  the dataframe in area_lengthBased.RData (object name is \code{RVdata})
-#'  and/or area_RVdata.csv. The dataframe has 6 columns: \code{ID} (the area
-#'  ID), \code{YEAR}, \code{SPECIES} (the research vessel species code),
-#'  \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
-#'
-#'  OR
-#'
-#'  If \code{lengthBased} is \code{FALSE}: path/output/RV/notlengthBased and
-#'  stores the dataframe in area_notlengthBased.RData (object name is
-#'  \code{RVdata}) and/or area_RVdata.csv. The dataframe has 5 columns:
-#'  \code{ID} (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel
-#'  species code), \code{BIOMASS}, and \code{ABUNDANCE}.
-#'
+#'  If \code{lengthbased = TRUE}, \code{RVdata} has 6 columns: \code{YEAR},
+#'  \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'  
+#'  If \code{lengthbased = FALSE}, \code{RVdata} has 5 columns: \code{YEAR},
+#'  \code{SPECIES}, \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'  
 #'@references Original code by DD.
 #'@importFrom utils write.csv
 #'@export
 
 RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"), 
-                        lengthBased, csv = TRUE, rdata = TRUE){
+                        lengthbased, qadjusted, update_RV = FALSE, csv = TRUE, rdata = TRUE){
+  
+  
+  # Extract and stratify biomass data if it hasn't been done already
+  if(update_RV) extractRV(path = path, s.year = s.year, e.year = e.year, areas = areas)
   
   years <- c(s.year:e.year)
   
@@ -47,10 +52,14 @@ RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
     
     for (i in 1:length(years)){
       
-      if(lengthBased) path.input <- paste(path, "/data/stratified/lengthBased/", areas.j,"/", sep = "")
-      if(!lengthBased) path.input <- paste(path, "/data/stratified/notlengthBased/", areas.j,"/", sep = "")
+      if(lengthbased & qadjusted) u <- "lengthbased_qadj"
+      if(lengthbased & !qadjusted) u <- "lengthbased_notqadj"
+      if(!lengthbased & qadjusted) u <- "notlengthbased_qadj"
+      if(!lengthbased & !qadjusted) u <- "notlengthbased_notqadj"
       
-      load(paste(path.input, years[i],".RData",sep=""))		
+      path.input <- paste(path, "/data/stratified/", u, "/", areas.j,"/", sep = "")
+      
+      load(paste(path.input, years[i], ".RData", sep=""))		
       data.i = out
       rm(out)
       
@@ -59,27 +68,22 @@ RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
       
       data.i = cbind(YEAR.i, data.i)
       
-      if(lengthBased) names(data.i) = c("YEAR", "SPECIES", "ID", "LENGTH", "BIOMASS", "ABUNDANCE")
-      if(!lengthBased) names(data.i) = c("YEAR", "SPECIES", "ID", "BIOMASS", "ABUNDANCE")
+      if(lengthbased) names(data.i) = c("YEAR", "SPECIES", "ID", "LENGTH", "BIOMASS", "ABUNDANCE")
+      if(!lengthbased) names(data.i) = c("YEAR", "SPECIES", "ID", "BIOMASS", "ABUNDANCE")
       
       allData <- rbind(allData, data.i)
       
     }
     
-    if(lengthBased) {
-      dir.create(paste(path, "/output/RV/lengthBased", sep = ""), recursive = T, showWarnings = F)
-      path.output <- paste(path, "/output/RV/lengthBased/", areas.j, "_lengthBased", sep = "")
-    }
-    if(!lengthBased) {
-      dir.create(paste(path, "/output/RV/notlengthBased", sep = ""), recursive = T, showWarnings = F)
-      path.output <- paste(path, "/output/RV/notlengthBased/", areas.j, "_notlengthBased", sep = "")
-    }
+    # not sure about this path
+    dir.create(paste(path, "/output/RV/", areas.j, sep = ""), recursive = T, showWarnings = F)
+    path.output <- paste(path, "/output/RV/", areas.j, "/", areas.j, "_", u, sep = "")
+    
     
     RVdata <- allData
     if(csv) write.csv(RVdata, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
-    # save data as an R .RData file as well
     if(rdata) save(RVdata, file = paste(path.output, ".RData", sep=""))
-  
+    
   }
   
   print("survey dataframes exported")

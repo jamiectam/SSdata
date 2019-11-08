@@ -1,4 +1,4 @@
-#'@title Exports fishery independent and commercial landings data
+#'@title Exports fishery independent and commercial landings data 
 #'@description Exports fishery independent and commercial landings
 #'  dataframes in a format suitable for the \code{marindicators} package.
 #'@inheritParams biomassData
@@ -34,31 +34,44 @@
 #'  and then q-corrected, with columns \code{ID}, \code{YEAR}, \code{SPECIES},
 #'  \code{BIOMASS} and \code{ABUNDANCE}. File name is area_notlengthBased.RData;
 #'  object name is \code{RVdata}.
-
 #'@references Original code by DD.
 #'@export
 
 
-compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo", "shelf", "esswss"), 
+compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo", "shelf", "esswss"),
                               areas.land, csv = FALSE, rdata = TRUE){
+
+  # Extract fishery independent data
+  biomassData(path = path, s.year = s.year, e.year = e.year, s.strat = 440, e.strat = 495,
+              vessel.correction = TRUE)
   
-  # Extract and stratify fishery independent data
-  extractBiomass(path = path, s.year = s.year, e.year = e.year, areas = areas.RV)
-  # Extract landings data
-  extractLandings(path) 
+  # Stratify fishery independent data
+  stratifyBiomass(path = path, s.year = s.year, e.year = e.year, lengthbased = TRUE, qadjusted = TRUE,
+                  areas = areas.RV)
+  stratifyBiomass(path = path, s.year = s.year, e.year = e.year, lengthbased = TRUE, qadjusted = FALSE,
+                  areas = areas.RV)
+  stratifyBiomass(path = path, s.year = s.year, e.year = e.year, lengthbased = FALSE, qadjusted = TRUE,
+                  areas = areas.RV)
+  stratifyBiomass(path = path, s.year = s.year, e.year = e.year, lengthbased = FALSE, qadjusted = FALSE,
+                  areas = areas.RV)
+  
   
   # Format fishery independent data
+  RVdataframe(path = path,  s.yea = s.year, e.year = e.year,
+              areas = areas.RV, lengthbased = TRUE, qadjusted = TRUE, csv = csv, rdata = rdata)
   RVdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, lengthBased = FALSE, csv = csv, rdata = rdata)
-  
-  RVdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, lengthBased = TRUE, csv = csv, rdata = rdata)
-  
+              areas = areas.RV, lengthbased = TRUE, qadjusted = FALSE, csv = csv, rdata = rdata)
+  RVdataframe(path = path,  s.year = s.year, e.year = e.year,
+              areas = areas.RV, lengthbased = FALSE, qadjusted = TRUE, csv = csv, rdata = rdata)
+  RVdataframe(path = path,  s.year = s.year, e.year = e.year,
+              areas = areas.RV, lengthbased = FALSE, qadjusted = FALSE, csv = csv, rdata = rdata)
+
+  # Extract and format length-weight data
   LWdataframe(path = path,  s.year = s.year, e.year = e.year, 
-              areas = areas.RV, csv = csv, rdata = rdata)
+              areas = areas.RV, update_LW = TRUE, csv = csv, rdata = rdata)
   
+  # Extract and format landings data
+  LANDdataframe(path = path, areas = areas.land, update_LAND = TRUE, csv = csv, rdata = rdata)
   
-  # Format landings data and use RV species code!
-  LANDdataframe(path = path, areas = areas.land, csv = csv, rdata = rdata)
   
 }

@@ -5,11 +5,11 @@
 \title{Formats length-weight data for use in the \code{marindicators} package}
 \usage{
 LWdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
-  "strat"), csv = TRUE, rdata = TRUE)
+  "strat"), update_LW = FALSE, csv = TRUE, rdata = TRUE)
 }
 \arguments{
 \item{path}{The filepath to the data folder created by
-\code{extractBiomass()}.}
+\code{extractLW()}.}
 
 \item{s.year}{Year for which to begin data extraction.}
 
@@ -17,6 +17,10 @@ LWdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
 
 \item{areas}{Areas of interest. A separate dataframe will be exported for each
 area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.}
+
+\item{update_LW}{Logical parameter indicating whether to run
+\code{extractLW()}. This can be time consuming, so if LW data is already extracted, use the default
+\code{update_LW = FALSE}.}
 
 \item{csv}{Logical value indicating whether to export dataframe as a .csv
 file. Default is \code{csv = TRUE}.}

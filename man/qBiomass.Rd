@@ -2,46 +2,73 @@
 % Please edit documentation in R/qBiomass.R
 \name{qBiomass}
 \alias{qBiomass}
-\title{Applies length-based q-adjusted to biomass and abundance data (before
- stratification)}
+\title{Applies length-based q-adjustment to biomass and abundance data at the
+ set level}
 \usage{
 qBiomass(species, year, area = "4VWX", fun_group = NA, q = 0,
-  len_corr = 1, nums = F, a.b.plot = F, by.set = T,
-  by.length = T)
+  len_corr = 1)
 }
 \arguments{
-\item{species}{Species from catchability coefficients table
-(\code{catch_coef}) in \code{biomassData()}.}
+\item{species}{Species code from the \code{catch_coeffs} table. This argument
+is supplied by \code{biomassData()}.}
 
-\item{year}{Year to calculate the data}
+\item{year}{Year to calculate the data, supplied by \code{biomasData()}}
 
-\item{area}{Default is \code{area = "4VWX"}}
+\item{area}{Area for which to extract the data. Default is \code{area =
+"4VWX"}}
 
-\item{fun_group}{Functional group from catchability coefficients table
-(\code{catch_coef}) in \code{biomassData()}.}
+\item{fun_group}{Functional group from the \code{catch_coeffs} table. This argument
+is supplied by \code{biomassData()}.}
 
-\item{q}{Initial q-correction from catchability coefficients table
-(\code{catch_coef}) in \code{biomassData()}.}
+\item{q}{Initial q-correction from the \code{catch_coeffs} table. This argument
+is supplied by \code{biomassData()}.}
 
-\item{len_corr}{Initial length correction from catchability coefficients table
-(\code{catch_coef}) in \code{biomassData()}.}
-
-\item{nums}{Not really sure what this does.}
-
-\item{a.b.plot}{Option to make length-weight plot.}
-
-\item{by.set}{Return data by set. (?) Default is \code{by.set = TRUE}.}
-
-\item{by.length}{Return data by set. (?) Default is \code{by.length = TRUE}.}
+\item{len_corr}{Initial length correction from the \code{catch_coeffs} table. This argument
+is supplied by \code{biomassData()}.}
 }
 \value{
-Returns the q-ajusted biomass and abundance to ]code{bioamssData()}.
+Returns the q-ajusted biomass and abundance to \code{bioamssData()}.
 }
 \description{
-I'm not sure if I need this function since we are doing postStat.
- But it sets up the extraction of the biomass/abundance data in
- biomassData(). Note from AC: biomass q adju using medians from harley and
- myers tech report
+Applies length-based q-adjustments to biomass and abundance data
+ at the set level and returns to the results to `biomassData()`.
+}
+\details{
+\code{qBiomass()} is called by the \code{biomassData()} function.
+ Arguments are supplied by the catch_coefs table
+ (gomezc.indiseas_catchability_coeffs), which includes columns
+ \code{FUNGROUP}, \code{Q}, and \code{LENCORR} for 88 \code{SPECIES}.
+ \code{qBiomass()} loops over each row of this table for each year supplied
+ to \code{biomassData()}.
+
+ \code{qBiomass()} obtains numbers (\code{ABUNDANCE}) at length for the given
+ \code{species} for 1 cm intervals from the Oracle database.
+
+ Biomass estimates are based on the length-weight relationship:
+ \deqn{ln(Weight) = a + ln(Length) * b} The function obtains length and
+ weight data for \code{species} in \code{year} from Oracle and estimates
+ \eqn{a} and \eqn{b}. The average weight of fish at each length is then
+ estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the biomass
+ estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
+
+ If there are less than 100 length-weight observations in the database for
+ the given \code{species} in `year`, the function will include observations
+ from the 5 years before and after `year`. If there are still less than 100
+ observations, data from all years will be included. This can result is some
+ discrepancies when biomass data is extracted in different years.
+
+ \bold{q-correction}
+
+ q is calculated based on the arguments \code{fun_group} nad \code{q} using
+ the equation
+ \deqn{g1*(exp(a1+b1*(LEGNTH*lencorr)))/(1+exp(a1+b1*(LENGTH*lencorr)))}
+ where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each functional
+ group, `len_corr` is an argument provided by `biomassData()`, and `LENGTH`
+ is the length interval (cm).
+
+ q-corrected abundance: \eqn{\code{QABUNDANCE} = \code{ABUNDANCE}/q}.
+
+ q-corrected biomass: \eqn{\code{QBIOMASS} = \code{QABUNDANCE} * Weight_bar}
 }
 \references{
 Modified code from AC's ExtractIndicators/R/qBiomass (function

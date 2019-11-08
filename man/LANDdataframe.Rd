@@ -5,8 +5,8 @@
 \title{Formats commercial landings data for use in the \code{marindicators}
  package}
 \usage{
-LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), csv = TRUE,
-  rdata = TRUE)
+LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
+  csv = TRUE, rdata = TRUE)
 }
 \arguments{
 \item{path}{The filepath to the data folder created by
@@ -14,6 +14,10 @@ LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), csv = TRUE,
 
 \item{areas}{Areas of interest. A separate landings dataframe will be exported
 for each area. Default is \code{areas = c("shelf", "esswss", "nafo")}}
+
+\item{update_LAND}{Logical parameter indicating whether to run
+\code{extractLAND()}. This may be time consuming, so if data is already extracted, use the
+default \code{update_LAND = FALSE}.}
 
 \item{csv}{Logical value indicating whether to export landings dataframe as a
 .csv file. Default is \code{csv = TRUE}.}

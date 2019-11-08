@@ -15,7 +15,7 @@
 
 
 
-extractLandings <- function(path) {
+extractLAND <- function(path) {
   
   
   NAFO <- function(area=paste("4VS","4VN","4X","4W",sep="','")) {

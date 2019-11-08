@@ -18,6 +18,9 @@
 #'  .csv file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export landings dataframe as
 #'  a .RData file. Default is \code{rdata = TRUE}.
+#'@param update_LAND Logical parameter indicating whether to run
+#'  \code{extractLAND()}. This may be time consuming, so if data is already extracted, use the
+#'  default \code{update_LAND = FALSE}.
 #'@return This function creates a directory output/Landings and stores the
 #'  landings dataframe in area_land.RData (object name is \code{land}) and/or
 #'  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
@@ -29,7 +32,12 @@
 #'@export
 
 
-LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), csv = TRUE, rdata = TRUE){
+LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
+                          csv = TRUE, rdata = TRUE){
+  
+  # Extract landings data if it hasn't been extracted already
+  if(update_LAND) extractLAND(path = path)
+  
   
   # Import data
   load(paste(path, "/data/landings/landings.RData", sep=""))    # load landings data 
