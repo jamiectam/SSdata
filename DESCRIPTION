@@ -6,7 +6,7 @@ Authors: Danielle Dempsey, Adam Cook
 Authors@R: c(person("Danielle", "Dempsey", email="Danielle.Dempsey@dfo-mpo.gc.ca", role = c("aut", "cre")),
            person("Adam", "Cook", email="Adam.Cook@dfo-mpo.gc.ca", role= "aut"))
 Maintainer: Danielle Dempsey <Danielle.Dempsey@dfo-mpo.gc.ca>
-Description: This package extracts fishery independent and commercial landings data for different areas on the Scotian Shelf (strata, NAFO, ESS/WSS and Shelf) and formats it for use with the marindicators package.
+Description: Extracts fishery independent and commercial landings data for different spatial scales on the Scotian Shelf (strata, NAFO, ESS/WSS and Shelf), and formats it for use with the marindicators package (optional).
 Depends:
     R (>= 3.6.0)
 Imports:

@@ -1,9 +1,13 @@
-#'@title Extracts fishery independent data
-#'@description Extracts annual length-based and not length-based
-#'  (i.e., aggregated over length) data for the Scotian Shelf. QABUNDANCE and
-#'  QBIOMASS are q-adjusted at the set level (i.e., before stratification).
+#'@title Extracts and exports fishery independent biomass and abundance data
+#'@description Extracts and exports annual length-based and not length-based
+#'  (i.e., aggregated over length) biomass and abundance data for the Scotian
+#'  Shelf. \code{QABUNDANCE} and \code{QBIOMASS} are q-adjusted at the set level
+#'  (i.e., before stratification).
 #'
 #'  Herring biomass/abundance is treated separately from the other species.
+#'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+#'  = ###)} in the global environment. This channel must have access to the XXXX
+#'  databases.
 #'@param path Filepath indicating where to create folders to store the extracted
 #'  data.
 #'@param s.strat Stratum for which to begin data extraction. Default is
@@ -13,15 +17,26 @@
 #'@param s.year Year for which to begin data extraction.
 #'@param e.year Year for which to end data extraction.
 #'@param vessel.correction Logical value indicating whether to apply vessel
-#'  correction to BIOMASS and ABUNDANCE. Default is vessel.correction = TRUE.
-#'@return This function creates directories to store extracted data. Within each
-#'  folder, data for each year is saved in a separate RData file.
+#'  correction to \code{BIOMASS} and \code{ABUNDANCE}. Default is
+#'  \code{vessel.correction} = TRUE.
+#'@return Creates directories to store extracted data.
 #'
-#'  path/data/aggregate stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at
-#'  the set level.
+#'  **Not length-based**
+#'  path/data/aggregate/ stores an RData file each year called year.RData
+#'  (object name \code{dat}). \code{dat} has 9 columns: \code{MISSION},
+#'  \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS},
+#'  \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
 #'
-#'  path/data/length stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at the
-#'  set level for LENGTH in 1 cm increments. 
+#'  **Length-based**
+#'  path/data/length/ stores an RData file for each year called
+#'  num_biom_at_length_year.RData (object name \code{out}). \code{out} has 10
+#'  columns: \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR},
+#'  \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and
+#'  \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is length in 1 cm
+#'  increments.
+#'  
+#'  Biomass units are: XXX
+#'  Abundance units are: XXXX
 #'@references Modified code from AC's ExtractIndicators/R/biomassData.R
 #'@importFrom stats aggregate
 #'@importFrom reshape melt
