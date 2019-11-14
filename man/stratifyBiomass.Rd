@@ -33,13 +33,16 @@ This function creates a directory to store the stratified data:
  data/stratified/folder/. The name of "folder" depends on the arguments
  \code{lengthbased} and \code{qadjusted}:
 
- if(lengthBased & qadjusted), then folder is named "lengthbased_qadj"
+ \code{if(lengthBased & qadjusted)}, then folder is named "lengthbased_qadj"
 
- if(lengthBased & !qadjusted), then folder is named "lengthbased_notqadj"
+ \code{if(lengthBased & !qadjusted)}, then folder is named
+ "lengthbased_notqadj"
 
- if(!lengthBased & qadjusted), then folder is named "notlengthbased_qadj"
+ \code{if(!lengthBased & qadjusted)}, then folder is named
+ "notlengthbased_qadj"
 
- if(!lengthBased & qadjusted), then folder is named "notlengthbased_notqadj"
+ \code{if(!lengthBased & qadjusted)}, then folder is named
+ "notlengthbased_notqadj"
 
  Inside "folder" is a folder for each entry in \code{area}. Within each area
  folder is a .RData file for each year from s.year to e.year called
@@ -52,8 +55,9 @@ This function creates a directory to store the stratified data:
  \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
 }
 \description{
-clean up this code. Say that option for length-based or NOT, qadj
- or not. q-adjusted at the SET level
+Stratifies the biomass and abundance estimates based on the
+ weights in "stratweights.csv" in the extra info folder. User can choose
+ whether to return length-based and/or q-corrected values.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/stratifyBiomass.R

@@ -1,7 +1,8 @@
 #'@title Plot length-weight data
 #'@description Plots length-weight data for given species and year. Displays the
 #'  estimated values of a and b.
-
+#'@param year Year for which to extract data. Must be one of the 88 species in
+#'  the \code{catch_coefs} table in \code{biomassData}.
 #'@param species Species code for which to extract data. Must be one of the 88
 #'  species in the \code{catch_coefs} table in \code{biomassData}.
 #'@return A plot of weight vs. length.

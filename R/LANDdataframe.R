@@ -4,12 +4,16 @@
 #'  path/data/landings.landings.RData, attaches labels for the spatial scales of
 #'  interest ("shelf", "esswss", and "nafo") in column \code{ID}, and replaces
 #'  commercial species codes with the research vessel species codes.
-#'@details Area ID's are assiged from the file path//Extra
-#'  Info/landingsgroupings.csv.
+#'@details If \code{update_LAND = TRUE}, user must define \code{channel =
+#'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
+#'  channel must have access to the XXXX databases.
+#'
+#'  Area ID's are assiged from the file path/Extra Info/landingsgroupings.csv.
 #'
 #'  Commercial and research vessel species codes are matched from the file
 #'  path/Extra Info/SpeciesCodes.csv. the function accounts for the proportion
 #'  of landings of species with more than one RV code but one commercial code.
+#'
 #'@param path The filepath to the data folder created by
 #'  \code{extractLandings()}.
 #'@param areas Areas of interest. A separate landings dataframe will be exported
@@ -19,13 +23,15 @@
 #'@param rdata Logical value indicating whether to export landings dataframe as
 #'  a .RData file. Default is \code{rdata = TRUE}.
 #'@param update_LAND Logical parameter indicating whether to run
-#'  \code{extractLAND()}. This may be time consuming, so if data is already extracted, use the
-#'  default \code{update_LAND = FALSE}.
+#'  \code{extractLAND()}. This may be time consuming, so if data is already
+#'  extracted, use the default \code{update_LAND = FALSE}. If \code{update_LAND
+#'  = TRUE}, user must define \code{channel} in the global environment (see
+#'  \code{Details}).
 #'@return This function creates a directory output/Landings and stores the
 #'  landings dataframe in area_land.RData (object name is \code{land}) and/or
 #'  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
 #'  \code{YEAR}, \code{SPECIES} (the research vessel species code) and
-#'  \code{CATCH}.
+#'  \code{CATCH} (UNITS).
 #'@references Original code by DD.
 #'@importFrom utils write.csv
 #'@importFrom utils read.csv

@@ -8,6 +8,12 @@
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 #'  = ###)} in the global environment. This channel must have access to the XXXX
 #'  databases.
+#'
+#'  If \code{BIOMASS} or \code{ABUNDANCE} data is missing when the other is
+#'  present, the missing field is filled in based on the relationship
+#'  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
+#'  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
+#'  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
 #'@param path Filepath indicating where to create folders to store the extracted
 #'  data.
 #'@param s.strat Stratum for which to begin data extraction. Default is
@@ -21,22 +27,19 @@
 #'  \code{vessel.correction} = TRUE.
 #'@return Creates directories to store extracted data.
 #'
-#'  **Not length-based**
-#'  path/data/aggregate/ stores an RData file each year called year.RData
-#'  (object name \code{dat}). \code{dat} has 9 columns: \code{MISSION},
-#'  \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS},
-#'  \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
+#'  **Not length-based** path/data/aggregate/ stores an RData file each year
+#'  called year.RData (object name \code{dat}). \code{dat} has 9 columns:
+#'  \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT},
+#'  \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
 #'
-#'  **Length-based**
-#'  path/data/length/ stores an RData file for each year called
+#'  **Length-based** path/data/length/ stores an RData file for each year called
 #'  num_biom_at_length_year.RData (object name \code{out}). \code{out} has 10
 #'  columns: \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR},
 #'  \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and
 #'  \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is length in 1 cm
 #'  increments.
-#'  
-#'  Biomass units are: XXX
-#'  Abundance units are: XXXX
+#'
+#'  Biomass units are: XXX Abundance units are: XXXX
 #'@references Modified code from AC's ExtractIndicators/R/biomassData.R
 #'@importFrom stats aggregate
 #'@importFrom reshape melt
@@ -49,7 +52,7 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
   yr <- s.year:e.year
   
   #get 4X herring data
-  her <- herringAtLength(path1=path)
+  #her <- herringAtLength(path1=path)
   
   for(i in 1:length(yr)) {
     
@@ -71,12 +74,12 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     }
     out <- as.data.frame(do.call(rbind, outputs))
     
-    f <- out[out$SPEC==60 & out$STRAT >= 470 & out$STRAT <= 495,]  # extract herring observations
-    out <- out[setdiff(rownames(out), rownames(f)),]               # discard herring observations from out
-    mi <- unique(out$MISSION)				
-    h <- her[her$MISSION %in% mi,]                                 # add in new herring observations
-    out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]
-    out <- rbind(out, h)
+    # f <- out[out$SPEC==60 & out$STRAT >= 470 & out$STRAT <= 495,]  # extract herring observations
+    # out <- out[setdiff(rownames(out), rownames(f)),]               # discard herring observations from out
+    # mi <- unique(out$MISSION)				
+    # h <- her[her$MISSION %in% mi,]                                 # add in new herring observations
+     out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]
+    # out <- rbind(out, h)
     
     if(vessel.correction) out <- vesselCorr(out)                   # apply vessel correction
     
@@ -95,8 +98,8 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
                         data = out, FUN = sum)
     
     # Remove herring at length
-    f <- ag.out[ag.out$SPEC == 60 & ag.out$STRAT >= 470 & ag.out$STRAT <= 495,]
-    ag.out <- ag.out[setdiff(rownames(ag.out),rownames(f)),]
+    #f <- ag.out[ag.out$SPEC == 60 & ag.out$STRAT >= 470 & ag.out$STRAT <= 495,]
+    #ag.out <- ag.out[setdiff(rownames(ag.out),rownames(f)),]
     ag.out <- ag.out[ag.out$BIOMASS>0,]
     
     # Extract table with 7 columns:
@@ -114,20 +117,20 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     dat[is.na(dat$BIOMASS), 'BIOMASS'] <- 0
     
     # Add in the aggregated herrring
-    her1 <- herringAggregate(path1=path)
-    her1 <- her1[her1$ABUNDANCE>0,]
-    f <-dat[dat$SPEC==60 & dat$STRAT>=470 & dat$STRAT<=495,]
-    dat <- dat[setdiff(rownames(dat),rownames(f)),]
-    mi <- unique(dat$MISSION)				
-    h <- her1[her1$MISSION %in% mi,]
+    # her1 <- herringAggregate(path1=path)
+    # her1 <- her1[her1$ABUNDANCE>0,]
+    # f <-dat[dat$SPEC==60 & dat$STRAT>=470 & dat$STRAT<=495,]
+    # dat <- dat[setdiff(rownames(dat),rownames(f)),]
+    # mi <- unique(dat$MISSION)				
+    # h <- her1[her1$MISSION %in% mi,]
     
-    dat <- rbind(dat, h)
+    #dat <- rbind(dat, h)
     
     # Handle the missing biomass or abudance data where the other is present
     # by using mean weight = biomass/abundance
     if(any(dat$ABUNDANCE == 0 | dat$BIOMASS==0)) {
       
-      wt <- sqlQuery(channel,paste("select * from mean_wts_for_fill_in;",sep="")) # table of mean fish weight ("SPEC" and "MEAN_WT_FISH", 640 observations)
+      wt <- sqlQuery(channel, paste("select * from mean_wts_for_fill_in;",sep="")) # table of mean fish weight ("SPEC" and "MEAN_WT_FISH", 640 observations)
       dat <- merge(dat, wt, by = c('SPEC'), all.x = T)                            # merge dat and wt
       dat[is.na(dat$MEAN_WT_FISH), 'MEAN_WT_FISH'] <- 0.5                         # if mean fish weight is NA, assign mean weight of 0.5
       

@@ -1,17 +1,17 @@
 #'@title Formats fishery independey survey data for use in the
 #'  \code{marindicators} package
-#'@description This function imports data for each area from
-#'  path/data/stratified/lengthbased or path/data/stratified/notlengthbased,
+#'@description This function imports data exported by \code{stratifyBiomass()},
 #'  adds column \code{YEAR}, and binds all years together.
+#'@details If \code{update_LW = TRUE}, user must define \code{channel =
+#'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
+#'  channel must have access to the XXXX databases.
 #'@inheritParams biomassData
-#'@param path The filepath to the data folder created by
-#'  \code{extractBiomass()}.
-#'@param areas Areas of interest. A separate dataframe will be exported for each
-#'  area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.
-#'@param lengthbased Logical parameter indicating whether to format length-based
-#'  \code{lengthbased = TRUE} or not length-based data \code{lengthbased =
-#'  FALSE}.
-#'@param qadjusted Logical parameter indicating whether
+#'@inheritParams stratifyBiomass
+#'@param path The filepath to the /data folder (not including /data).
+#'@param areas Areas for which to format data. A separate dataframe will be
+#'  exported for each area. Default is \code{areas = c("shelf", "esswss",
+#'  "nafo", "strat")}. If \code{update_RV = TRUE}, user must define
+#'  \code{channel} in the global environment (see \code{Details}).
 #'@param csv Logical value indicating whether to export dataframe as a .csv
 #'  file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export dataframe as a .RData
@@ -26,12 +26,14 @@
 #'  \code{lengthbased} and \code{qadjusted} (object name \code{RVdata}. These
 #'  files are formatted for the \code{marindicators} package.
 #'
-#'  If \code{lengthbased = TRUE}, \code{RVdata} has 6 columns: \code{YEAR},
-#'  \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and \code{ABUNDANCE}.
-#'  
-#'  If \code{lengthbased = FALSE}, \code{RVdata} has 5 columns: \code{YEAR},
-#'  \code{SPECIES}, \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
-#'  
+#'  If \code{lengthbased = TRUE}, then \code{RVdata} has 6 columns: \code{YEAR},
+#'  \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and
+#'  \code{ABUNDANCE}.
+#'
+#'  If \code{lengthbased = FALSE}, then \code{RVdata} has 5 columns:
+#'  \code{YEAR}, \code{SPECIES}, \code{ID}, \code{BIOMASS}, and
+#'  \code{ABUNDANCE}.
+#'
 #'@references Original code by DD.
 #'@importFrom utils write.csv
 #'@export

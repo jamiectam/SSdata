@@ -24,22 +24,31 @@ biomass and abundance data (\code{qadjusted = TRUE}) or not q-adjusted
 biomass and abundance data (\code{qadjusted = FALSE}). q-adjustments are
 applied at the set level.}
 
-\item{areas}{Areas of interest. A separate dataframe will be extracted for
-each area. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.}
+\item{areas}{Areas for which to extract and stratify the fishery independent
+survey data. A separate dataframe will be exported for each area. Default is
+\code{areas = c("shelf", "esswss", "nafo", "strat")}.}
 }
 \value{
 Returns data extracted and stratified by \code{biomassData()} and
  \code{stratifyBiomass()}.
- 
- From \code{biomassData()}:
- 
- path/data/aggregate stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at
- the set level.
 
- path/data/length stores BIOMASS, ABUNDANCE, QBIOMASS and QABUNDANCE at the
- set level for LENGTH in 1 cm increments. 
- 
- From\code{stratifyBiomass()}:data/stratified/folder/. The name of "folder" depends on the arguments
+ From \code{biomassData()}:
+
+ **Not length-based** path/data/aggregate/ stores an RData file each year
+ called year.RData (object name \code{dat}). \code{dat} has 9 columns:
+ \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT},
+ \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
+
+ **Length-based** path/data/length/ stores an RData file for each year called
+ num_biom_at_length_year.RData (object name \code{out}). \code{out} has 10
+ columns: \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR},
+ \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and
+ \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is length in 1 cm
+ increments.
+
+ From\code{stratifyBiomass()}:
+
+ data/stratified/folder/. The name of "folder" depends on the arguments
  \code{lengthbased} and \code{qadjusted}:
 
  if(lengthBased & qadjusted), then folder is named "lengthbased_qadj"
@@ -61,8 +70,13 @@ Returns data extracted and stratified by \code{biomassData()} and
  \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
 }
 \description{
-Runs\code{biomassData()} to extract survey data and and run
- \code{stratifyBiomass()} to stratify biomass and abundance estimates.
+Runs \code{biomassData()} to extract survey data and
+ \code{stratifyBiomass()} to stratify the biomass and abundance estimates.
+}
+\details{
+User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+ = ###)} in the global environment. This channel must have access to the XXXX
+ databases.
 }
 \references{
 Original code by DD.

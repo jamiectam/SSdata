@@ -1,24 +1,28 @@
 #'@title Applies vessel correction factor to key species
-#'@description Notes from AC: correct for different survey vessels (after, L.P
-#'  Fanning 1985): to obtain Alfred Needler comparable units: Lady Hammond
-#'  (1982) and Alfred Needler (1983 to present) used a Western IIA Otter Trawl
-#'  whereas The A.T. Cameron used a Yankee 35 ft trawl between 1970 to 1981 for
-#'  total numbers need to use appropriate wingspreads 35ft for yankee and 41ft
-#'  for western (From Manning 1985; reinforced by SJ Smith 2013).
-#'@param x Fishery indepdendet survey data as extracted in the At Lwngth section
-#'  of \code{biomassData()}.
+#'@description Called by \code{biomassData()} to apply vessel correction factor
+#'  to key species.
+#'
+#'  Notes from AC: correct for different survey vessels (after, L.P Fanning
+#'  1985): to obtain Alfred Needler comparable units: Lady Hammond (1982) and
+#'  Alfred Needler (1983 to present) used a Western IIA Otter Trawl whereas The
+#'  A.T. Cameron used a Yankee 35 ft trawl between 1970 to 1981 for total
+#'  numbers need to use appropriate wingspreads 35ft for yankee and 41ft for
+#'  western (From Manning 1985; reinforced by SJ Smith 2013).
+#'@param x Fishery indepdendet survey data as extracted by \code{biomassData()}.
 #'@return This function returns the corrected biomass and abundance data to
 #'  function \code{biomassData()}.
 #'@references Original code by DD.
 
 
 vesselCorr <- function(x) {
- 
+  
   cf = NULL
   x$CFVESSEL = 1  # initialise
+  
   # vessel change correction factors apply to these years:
   HAM=1   #  Lady Hammond (1979 - 1981)
   ATC=2   #  A.T. Cameron (1982 - 1983)
+  
   # species codes used by the database
   cod=10
   haddock=11

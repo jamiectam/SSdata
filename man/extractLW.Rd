@@ -16,12 +16,18 @@ data.}
 }
 \value{
 This function creates a directory to store extracted data:
-
-path/data/lenwgt stores fish weight at length.
+ path/data/lenwgt stores a separate file for each year, called lwyear.RData
+ (object name \code{wt}). \code{wt} has 4 columns: \code{STRAT},
+ \code{SPECIES}, \code{FLEN} (length in cm), \code{FWT} (weight in UNITS).
 }
 \description{
-This function extracts annual length-weight data from fishery
- independent surveys on the Scotian Shelf.
+Extracts annual length-weight data from fishery independent
+ surveys on the Scotian Shelf.
+}
+\details{
+User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+ = ###)} in the global environment. This channel must have access to the XXXX
+ database.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

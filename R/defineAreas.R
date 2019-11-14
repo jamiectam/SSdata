@@ -1,17 +1,17 @@
 #'@title Assigns area ID based on strata
-#'@description This function adds an area \code{ID} column to a dataframe that
-#'  already has a column \code{STRAT}.
+#'@description Adds column \code{ID} to a dataframe that already has a column
+#'  \code{STRAT}, and then assigns an area ID based on the strata number in
+#'  \code{STRAT}.
 #'@param dat A dataframe that includes the column \code{STRAT}, which has
-#'  entries indicating the strat on the Scotian Shelf (e.g., values from 440 to
+#'  entries indicating the strata on the Scotian Shelf (e.g., values from 440 to
 #'  495).
 #'@param area Character string indicating the spatial scale for which to assign
-#'  areas IDs. Options are: "strat", "nafo", "esswss",  "shelf", "indiseas",
-#'  "pollockwest", "pollockeast", "unit2redfish", "unit3redfish", "silverhake".
-#'
+#'  areas IDs. Options are: \code{"strat"}, \code{"nafo"}, \code{"esswss"},
+#'  \code{"shelf"}, \code{"indiseas"}, \code{"pollockwest"}, \code{"pollockeast"},
+#'  \code{"unit2redfish"}, \code{"unit3redfish"}, \code{"silverhake"}.
 #'@return The function returns dat with an extra column: \code{ID}
-
 #'@references Modified code from AC's ExtractIndicators/R/defineGroups.R.
-
+#'@export
 
 defineAreas <- function(dat, area) {
 	if(area == "nafo") {

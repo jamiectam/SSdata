@@ -4,8 +4,8 @@
 #'  at the set level and returns to the results to `biomassData()`.
 #'
 #'@details \code{qBiomass()} is called by the \code{biomassData()} function.
-#'  Arguments are supplied by the catch_coefs table
-#'  (gomezc.indiseas_catchability_coeffs), which includes columns
+#'  Arguments are supplied to \code{qBiomass()} from the \code{catch_coefs}
+#'  table (gomezc.indiseas_catchability_coeffs), which includes columns
 #'  \code{FUNGROUP}, \code{Q}, and \code{LENCORR} for 88 \code{SPECIES}.
 #'  \code{qBiomass()} loops over each row of this table for each year supplied
 #'  to \code{biomassData()}.
@@ -28,29 +28,27 @@
 #'
 #'  \bold{q-correction}
 #'
-#'  q is calculated based on the arguments \code{fun_group} nad \code{q} using
-#'  the equation
-#'  \deqn{g1*(exp(a1+b1*(LEGNTH*lencorr)))/(1+exp(a1+b1*(LENGTH*lencorr)))}
-#'  where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each functional
-#'  group, `len_corr` is an argument provided by `biomassData()`, and `LENGTH`
-#'  is the length interval (cm).
+#'  q is calculated based on the arguments \code{fun_group} and \code{q} using
+#'  the equation:
+#'  \deqn{q = g1*(exp(a1+b1*(\code{LENGTH}*\code{lencorr})))/(1+exp(a1+b1*(\code{LENGTH}*\code{lencorr})))}
+#'   where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each functional
+#'  group, \code{len_corr} is an argument provided by \code{biomassData()}, and
+#'  \code{LENGTH} is the length interval (cm).
 #'
 #'  q-corrected abundance: \eqn{\code{QABUNDANCE} = \code{ABUNDANCE}/q}.
 #'
-#'  q-corrected biomass: \eqn{\code{QBIOMASS} = \code{QABUNDANCE} * Weight_bar}
+#'  q-corrected biomass: \eqn{\code{QBIOMASS} = \code{QABUNDANCE} * Weight_{Avg}}
 #'
 #'@param species Species code from the \code{catch_coeffs} table. This argument
 #'  is supplied by \code{biomassData()}.
 #'@param year Year to calculate the data, supplied by \code{biomasData()}
-#'@param area Area for which to extract the data. Default is \code{area =
-#'  "4VWX"}
-#'@param fun_group Functional group from the \code{catch_coeffs} table. This argument
-#'  is supplied by \code{biomassData()}.
-#'@param q Initial q-correction from the \code{catch_coeffs} table. This argument
-#'  is supplied by \code{biomassData()}.
-#'@param len_corr Initial length correction from the \code{catch_coeffs} table. This argument
-#'  is supplied by \code{biomassData()}.
-#'@return Returns the q-ajusted biomass and abundance to \code{bioamssData()}.
+#'@param fun_group Functional group from the \code{catch_coeffs} table. This
+#'  argument is supplied by \code{biomassData()}.
+#'@param q Initial q-correction from the \code{catch_coeffs} table. This
+#'  argument is supplied by \code{biomassData()}.
+#'@param len_corr Initial length correction from the \code{catch_coeffs} table.
+#'  This argument is supplied by \code{biomassData()}.
+#'@return Returns the q-ajusted biomass and abundance to \code{biomassData()}.
 #'@references Modified code from AC's ExtractIndicators/R/qBiomass (function
 #'  \code{biomass_q_adj()})
 #'@importFrom stats coef
@@ -58,9 +56,11 @@
 #'@importFrom graphics title
 #'@importFrom RODBC sqlQuery
 
-qBiomass <- function(species, year, area = "4VWX", fun_group = NA, q = 0, len_corr = 1) {
-  #Checking to see if there is enough data to even bother with this species
+qBiomass <- function(species, year,  fun_group = NA, q = 0, len_corr = 1) {
   
+  area = "4VWX"
+  
+  #Checking to see if there is enough data to even bother with this species
   initial <- sqlQuery(channel,paste("select count(distinct c.mission||','||c.setno||','||",species,"||','||fshno) from groundfish.gsdet c, groundfish.gsinf i where i.mission=c.mission and i.setno=c.setno and to_char(sdate,'mm') in ('06','07','08') and strat in (select distinct strat from mflib.gsmgt where unit in ('",area,"')) and spec=",species,";",sep=""))
   go <- ifelse(initial>30,TRUE,FALSE)
   if(go==TRUE) {

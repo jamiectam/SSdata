@@ -1,6 +1,14 @@
-#'@title Exports fishery independent and commercial landings data 
-#'@description Exports fishery independent and commercial landings
-#'  dataframes in a format suitable for the \code{marindicators} package.
+#'@title Exports fishery independent and commercial landings data
+#'@description Exports fishery independent and commercial landings dataframes in
+#'  a format suitable for the \code{marindicators} package. These dataframes
+#'  correspond to \code{X}, \code{X_length}, \code{LenWt.table}, and \code{land}
+#'  in the \code{marindicators} package.
+#'@details Calls \code{biomassData()}, \code{stratifyBiomass()},
+#'  \code{RVdataframe()}, \code{LWdataframe()}, and \code{LANDdataframe()}.
+#'
+#'  User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
+#'  in the global environment. This channel must have access to the XXXX (RV)
+#'  and NAFO, ZIF, and MARFIS (commercial) databases.
 #'@inheritParams biomassData
 #'@param path Filepath indicating where to create folders to store the output.
 #'@param s.year Year for which to begin data compilation.
@@ -13,27 +21,30 @@
 #'  file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export dataframe as a .RData
 #'  file. Default is \code{rdata = TRUE}.
-#'@return The output is saved in directories created by the function:
+#'@return The output is saved in directories created by the functions:
 #'
-#'  path/output/Landings: An Rdata file of annual landings data with columns
-#'  \code{ID}, \code{YEAR}, \code{SPECIES}, \code{CATCH}. The species codes in
-#'  \code{SPECIES} are the RV codes. See ?LANDdataframe for more information.
-#'  File name is area_landings.RData; object name is land.
+#'  From \code{RVdataframe}: path/output/RV/area/lengthbased: annual
+#'  length-based biomass and abundance data, q-corrected and then stratified,
+#'  with columns \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH},
+#'  \code{BIOMASS} (UNITS) and \code{ABUNDANCE} (UNITS). File name is
+#'  area_lengthBased.RData; object name is \code{RVdata}.
 #'
-#'  path/output/LengthWeight: An Rdata file of annual length-weight data with
-#'  columns \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH},
-#'  \code{WEIGHT}. File name is area_LengthWeight.RData; object name is
-#'  \code{lw}.
+#'  path/output/RV/area/notlengthBased: annual biomass and abundance data,
+#'  q-corrected and then stratified, with columns \code{ID}, \code{YEAR},
+#'  \code{SPECIES}, \code{BIOMASS} (UNITS) and \code{ABUNDANCE} (UNITS). File
+#'  name is area_notlengthBased.RData; object name is \code{RVdata}.
 #'
-#'  path/output/RV/lengthBased: annual length-based biomass and abundance data,
-#'  stratified and then q-corrected, with columns \code{ID}, \code{YEAR},
-#'  \code{SPECIES}, \code{LENGTH}, \code{BIOMASS} and \code{ABUNDANCE}. File
-#'  name is area_lengthBased.RData; object name is \code{RVdata}.
+#'  From \code{LWdataframe()}: path/output/LengthWeight: An Rdata file of annual
+#'  length-weight data with columns \code{ID}, \code{YEAR}, \code{SPECIES},
+#'  \code{LENGTH} (cm), \code{WEIGHT} (UNITS). File name is
+#'  area_LengthWeight.RData; object name is \code{lw}.
 #'
-#'  path/output/RV/notlengthBased: annual biomass and abundance data, stratified
-#'  and then q-corrected, with columns \code{ID}, \code{YEAR}, \code{SPECIES},
-#'  \code{BIOMASS} and \code{ABUNDANCE}. File name is area_notlengthBased.RData;
-#'  object name is \code{RVdata}.
+#'  From \code{LANDdatafrmae()}: path/output/Landings: An Rdata file of annual
+#'  landings data with columns \code{ID}, \code{YEAR}, \code{SPECIES},
+#'  \code{CATCH} (UNITS). The species codes in \code{SPECIES} are the RV codes.
+#'  See \code{?LANDdataframe} for more information. File name is
+#'  area_landings.RData; object name is land.
+#'  
 #'@references Original code by DD.
 #'@export
 

@@ -16,8 +16,10 @@ LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
 for each area. Default is \code{areas = c("shelf", "esswss", "nafo")}}
 
 \item{update_LAND}{Logical parameter indicating whether to run
-\code{extractLAND()}. This may be time consuming, so if data is already extracted, use the
-default \code{update_LAND = FALSE}.}
+\code{extractLAND()}. This may be time consuming, so if data is already
+extracted, use the default \code{update_LAND = FALSE}. If \code{update_LAND
+= TRUE}, user must define \code{channel} in the global environment (see
+\code{Details}).}
 
 \item{csv}{Logical value indicating whether to export landings dataframe as a
 .csv file. Default is \code{csv = TRUE}.}
@@ -30,7 +32,7 @@ This function creates a directory output/Landings and stores the
  landings dataframe in area_land.RData (object name is \code{land}) and/or
  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
  \code{YEAR}, \code{SPECIES} (the research vessel species code) and
- \code{CATCH}.
+ \code{CATCH} (UNITS).
 }
 \description{
 This function imports data from
@@ -39,8 +41,11 @@ This function imports data from
  commercial species codes with the research vessel species codes.
 }
 \details{
-Area ID's are assiged from the file path//Extra
- Info/landingsgroupings.csv.
+If \code{update_LAND = TRUE}, user must define \code{channel =
+ odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
+ channel must have access to the XXXX databases.
+
+ Area ID's are assiged from the file path/Extra Info/landingsgroupings.csv.
 
  Commercial and research vessel species codes are matched from the file
  path/Extra Info/SpeciesCodes.csv. the function accounts for the proportion
