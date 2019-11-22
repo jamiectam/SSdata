@@ -60,6 +60,8 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
+ 
+ **Fixed high dogfish
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

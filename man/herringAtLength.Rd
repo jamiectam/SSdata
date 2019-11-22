@@ -4,10 +4,15 @@
 \alias{herringAtLength}
 \title{Not really sure what this does}
 \usage{
-herringAtLength(path1)
+herringAtLength(path, s.year, e.year)
 }
 \arguments{
-\item{path1}{Filepath indicating where extra info folder is stored}
+\item{path}{Filepath indicating where to create folders to store the extracted
+data.}
+
+\item{s.year}{Year for which to begin data extraction.}
+
+\item{e.year}{Year for which to end data extraction.}
 }
 \description{
 Documenting the function so I can build the package.

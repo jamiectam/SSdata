@@ -68,7 +68,7 @@ compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo"
   
   
   # Format fishery independent data
-  RVdataframe(path = path,  s.yea = s.year, e.year = e.year,
+  RVdataframe(path = path,  s.year = s.year, e.year = e.year,
               areas = areas.RV, lengthbased = TRUE, qadjusted = TRUE, csv = csv, rdata = rdata)
   RVdataframe(path = path,  s.year = s.year, e.year = e.year, 
               areas = areas.RV, lengthbased = TRUE, qadjusted = FALSE, csv = csv, rdata = rdata)

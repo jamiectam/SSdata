@@ -2,15 +2,48 @@
 % Please edit documentation in R/herringAggregate.R
 \name{herringAggregate}
 \alias{herringAggregate}
-\title{Not really sure what this does}
+\title{Allocates 4X herring index into sets based on the RV survey.}
 \usage{
-herringAggregate(path1)
+herringAggregate(path, s.year, e.year)
 }
 \arguments{
-\item{path1}{Filepath indicating where extra info folder is stored}
+\item{path}{Filepath indicating where to create folders to store the extracted
+data.}
+
+\item{s.year}{Year for which to begin data extraction.}
+
+\item{e.year}{Year for which to end data extraction.}
 }
 \description{
-Documenting the function so I can build the package.
+This function is called by \code{biomassData} to allocate the 4X
+ herring index from XXXX into sets based on the proportion from the resaerch
+ vessel survey.
+}
+\details{
+User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+ = ###)} in the global environment. This channel must have access to the XXXX
+ databases.
+
+ The 4X herring index is based on XXXX. This data must be stored in
+ path/extra info/**name.csv.
+
+ The /code{ABUNDNACE} in **name.csv is allocated across the research vessel
+ summer strata based on a stratification/destratification scheme:
+
+ 1. Stratify research vessel survey \code{ABUNDANCE} and determine the total
+ \code{ABUNDANCE} over the whole area.
+
+ 2. Calculate the proportion of the total \code{ABUNDANCE} that is
+ contributed by each strata.
+
+ 3.  Calculate the proportion of the mean \code{ABUNDANCE} in each strata
+ that is contributed by each set.
+
+ 4. Use the proportions in 2. and 3. to destratify the 4X herring index
+ \code{ABUNDACE}.
+
+ 5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
+ \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}
 }
 \references{
 Modified code from AC's ExtractIndicators/R/VPAherring.R

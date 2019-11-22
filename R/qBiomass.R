@@ -55,6 +55,7 @@
 #'@importFrom graphics curve
 #'@importFrom graphics title
 #'@importFrom RODBC sqlQuery
+#'@export
 
 qBiomass <- function(species, year,  fun_group = NA, q = 0, len_corr = 1) {
   

@@ -14,6 +14,13 @@
 #'  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
 #'  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
 #'  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
+#'  
+#'  **Fixed high dogfish
+#'   # Change ABUNDANCE = inf to ABUNDANCE = 1 
+
+# If any biomass or abundance is still NA, stop code
+
+# Replace 0's with small values
 #'@param path Filepath indicating where to create folders to store the extracted
 #'  data.
 #'@param s.strat Stratum for which to begin data extraction. Default is
@@ -51,8 +58,26 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
   
   yr <- s.year:e.year
   
+  # comment here to elaborate on why calling herring now
   #get 4X herring data
-  #her <- herringAtLength(path1=path)
+  #her <- herring.at.Length(path=path)
+  her.length <- herringAtLength(path = path, s.year = s.year, e.year = e.year)
+  #her.length <- her.length[her.length$ABUNDANCE >0,] # DD added
+  
+  # moved this out of yr loop so that not calculate for  EVERY year over each loop
+  # not convince we need this function anyway because the sum over lengths = aggregated
+  her.agg <- herringAggregate(path = path, s.year = s.year, e.year = e.year)
+  her.agg <- her.agg[her.agg$ABUNDANCE>0,] # why not need this for her.length?
+  
+  # # DELETE
+  # her.check <- aggregate(BIOMASS ~ MISSION + SETNO + YEAR + STRAT, data = her.length, FUN = sum)
+  # 
+  # her.agg <- her.agg[order(her.agg$YEAR, her.agg$STRAT, 
+  #                          her.agg$MISSION, her.agg$SETNO, her.agg$BIOMASS),]
+  # her.check <- her.check[order(her.check$YEAR, her.check$STRAT, 
+  #                            her.check$MISSION, her.check$SETNO, her.check$BIOMASS),]
+  # 
+  # all.equal(her.check$BIOMASS, her.agg$BIOMASS)
   
   for(i in 1:length(yr)) {
     
@@ -74,12 +99,13 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     }
     out <- as.data.frame(do.call(rbind, outputs))
     
-    # f <- out[out$SPEC==60 & out$STRAT >= 470 & out$STRAT <= 495,]  # extract herring observations
-    # out <- out[setdiff(rownames(out), rownames(f)),]               # discard herring observations from out
-    # mi <- unique(out$MISSION)				
-    # h <- her[her$MISSION %in% mi,]                                 # add in new herring observations
-     out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]
-    # out <- rbind(out, h)
+    f <- out[out$SPEC==60 & out$STRAT >= 470 & out$STRAT <= 495,]  # extract 4X herring observations
+    out <- out[setdiff(rownames(out), rownames(f)),]               # discard 4X herring observations from out
+    mi <- unique(out$MISSION)
+    h.length <- her.length[her.length$MISSION %in% mi,]                                 # keep herring observations from year i (based on MISSION)                         
+    
+    out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]  # remove lat/long columns
+    out <- rbind(out, h.length)                                           # add in herring observations from herringAtLength
     
     if(vessel.correction) out <- vesselCorr(out)                   # apply vessel correction
     
@@ -92,14 +118,14 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     # End of At Length ------------------------------------------------------
     
     # Begin aggregate ---------------------------------------------------------
-    # Sum over length
+    # Sum over length (aggregated biomass/abundance of species that have length-based q)
     ag.out <- aggregate(cbind(QBIOMASS, BIOMASS, QABUNDANCE, ABUNDANCE) ~ 
                         YEAR + STRAT + MISSION + SETNO + SPECIES, 
                         data = out, FUN = sum)
     
-    # Remove herring at length
-    #f <- ag.out[ag.out$SPEC == 60 & ag.out$STRAT >= 470 & ag.out$STRAT <= 495,]
-    #ag.out <- ag.out[setdiff(rownames(ag.out),rownames(f)),]
+    # Remove 4X herring at length
+    f <- ag.out[ag.out$SPEC == 60 & ag.out$STRAT >= 470 & ag.out$STRAT <= 495,]
+    ag.out <- ag.out[setdiff(rownames(ag.out),rownames(f)),]
     ag.out <- ag.out[ag.out$BIOMASS>0,]
     
     # Extract table with 7 columns:
@@ -116,15 +142,14 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     dat[is.na(dat$ABUNDANCE), 'ABUNDANCE'] <- 0
     dat[is.na(dat$BIOMASS), 'BIOMASS'] <- 0
     
-    # Add in the aggregated herrring
-    # her1 <- herringAggregate(path1=path)
-    # her1 <- her1[her1$ABUNDANCE>0,]
-    # f <-dat[dat$SPEC==60 & dat$STRAT>=470 & dat$STRAT<=495,]
-    # dat <- dat[setdiff(rownames(dat),rownames(f)),]
-    # mi <- unique(dat$MISSION)				
-    # h <- her1[her1$MISSION %in% mi,]
-    
-    #dat <- rbind(dat, h)
+    # Remove 4X herring data from dat
+    f <-dat[dat$SPEC==60 & dat$STRAT>=470 & dat$STRAT<=495,]
+    dat <- dat[setdiff(rownames(dat),rownames(f)),]
+    mi <- unique(dat$MISSION)
+   
+    # Add in the aggregated 4X herrring calculated from herringAggregate()
+    h.agg <- her.agg[her.agg$MISSION %in% mi,]
+    dat <- rbind(dat, h.agg)
     
     # Handle the missing biomass or abudance data where the other is present
     # by using mean weight = biomass/abundance
