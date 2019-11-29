@@ -27,6 +27,8 @@
 #'  extracted, use the default \code{update_LAND = FALSE}. If \code{update_LAND
 #'  = TRUE}, user must define \code{channel} in the global environment (see
 #'  \code{Details}).
+#'@param e.year If \code{update_LAND = TRUE}, \code{e.year} is the final year
+#'  for which to extract the landings data. Default is \code{e.year = NULL}. 
 #'@return This function creates a directory output/Landings and stores the
 #'  landings dataframe in area_land.RData (object name is \code{land}) and/or
 #'  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
@@ -38,16 +40,15 @@
 #'@export
 
 
-LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
+LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAND, e.year = NULL,
                           csv = TRUE, rdata = TRUE){
   
   # Extract landings data if it hasn't been extracted already
-  if(update_LAND) extractLAND(path = path)
-  
+  if(update_LAND) extractLAND(path = path, e.year = e.year)
   
   # Import data
   load(paste(path, "/data/landings/landings.RData", sep=""))    # load landings data 
-  names(landings)[1] <- "ALLCODES"                    # change column name to "ALLCODES"
+  names(landings)[1] <- "ALLCODES"                              # change column name to "ALLCODES"
   
   grp <- read.csv(paste(path,"/Extra Info/landingsgroupings.csv", sep = ""))  # import table to match NAFO_UNIT (in landings) to area ID codes
 

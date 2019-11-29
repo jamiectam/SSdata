@@ -58,26 +58,15 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
   
   yr <- s.year:e.year
   
-  # comment here to elaborate on why calling herring now
-  #get 4X herring data
-  #her <- herring.at.Length(path=path)
+  # Call herringAggregate to return the de-stratified length-based 4X herring index
+  # This will replace the RV observations of length-based herring in 4X
   her.length <- herringAtLength(path = path, s.year = s.year, e.year = e.year)
   #her.length <- her.length[her.length$ABUNDANCE >0,] # DD added
   
-  # moved this out of yr loop so that not calculate for  EVERY year over each loop
-  # not convince we need this function anyway because the sum over lengths = aggregated
+  # Call herringAggregate to return the de-stratified 4X herring index
+  # This will replace the RV observations of 4X herring
   her.agg <- herringAggregate(path = path, s.year = s.year, e.year = e.year)
   her.agg <- her.agg[her.agg$ABUNDANCE>0,] # why not need this for her.length?
-  
-  # # DELETE
-  # her.check <- aggregate(BIOMASS ~ MISSION + SETNO + YEAR + STRAT, data = her.length, FUN = sum)
-  # 
-  # her.agg <- her.agg[order(her.agg$YEAR, her.agg$STRAT, 
-  #                          her.agg$MISSION, her.agg$SETNO, her.agg$BIOMASS),]
-  # her.check <- her.check[order(her.check$YEAR, her.check$STRAT, 
-  #                            her.check$MISSION, her.check$SETNO, her.check$BIOMASS),]
-  # 
-  # all.equal(her.check$BIOMASS, her.agg$BIOMASS)
   
   for(i in 1:length(yr)) {
     

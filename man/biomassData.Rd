@@ -62,6 +62,7 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
  
  **Fixed high dogfish
+  # Change ABUNDANCE = inf to ABUNDANCE = 1
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

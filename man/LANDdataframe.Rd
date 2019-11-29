@@ -6,7 +6,7 @@
  package}
 \usage{
 LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
-  csv = TRUE, rdata = TRUE)
+  e.year = NULL, csv = TRUE, rdata = TRUE)
 }
 \arguments{
 \item{path}{The filepath to the data folder created by
@@ -20,6 +20,9 @@ for each area. Default is \code{areas = c("shelf", "esswss", "nafo")}}
 extracted, use the default \code{update_LAND = FALSE}. If \code{update_LAND
 = TRUE}, user must define \code{channel} in the global environment (see
 \code{Details}).}
+
+\item{e.year}{If \code{update_LAND = TRUE}, \code{e.year} is the final year
+for which to extract the landings data. Default is \code{e.year = NULL}.}
 
 \item{csv}{Logical value indicating whether to export landings dataframe as a
 .csv file. Default is \code{csv = TRUE}.}

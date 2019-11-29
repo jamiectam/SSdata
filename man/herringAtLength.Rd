@@ -2,7 +2,8 @@
 % Please edit documentation in R/herringAtLength.R
 \name{herringAtLength}
 \alias{herringAtLength}
-\title{Not really sure what this does}
+\title{Allocates 4X length-based herring index into sets and length classes
+ based on the RV survey.}
 \usage{
 herringAtLength(path, s.year, e.year)
 }
@@ -15,7 +16,49 @@ data.}
 \item{e.year}{Year for which to end data extraction.}
 }
 \description{
-Documenting the function so I can build the package.
+This function is called by \code{biomassData} to allocate the 4X
+ herring index from XXXX into sets and length classes based on the proportion
+ from the resaerch vessel survey.
+
+ **I think there are two mistakes in here: 1. The zero sets are not used to
+ calculate the strata means. 2. The strata weights are different than in
+ stratifyBiomass() for before 1982
+}
+\details{
+User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+ = ###)} in the global environment. This channel must have access to the XXXX
+ databases.
+
+ The 4X length-based herring index is based on XXXX. This data must be stored
+ in path/extra info/**name.csv.
+
+ The /code{ABUNDNACE} in **name.csv is allocated across the research vessel
+ summer strata and length classes observed in the survey based on a
+ stratification/destratification scheme:
+
+ 1. Stratify research vessel survey \code{ABUNDANCE} and determine the total
+ \code{ABUNDANCE} over the whole area.
+
+ 2. Calculate the proportion of the total \code{ABUNDANCE} that is
+ contributed by each strata.
+
+ 3.  Calculate the proportion of the mean \code{ABUNDANCE} in each strata
+ that is contributed by each set.
+
+ 4. Use the proportions in 2. and 3. to destratify the 4X herring index
+ \code{ABUNDACE}.
+
+ 5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
+ \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
+
+ (Notes:
+
+ 1. AC's code did not account for the different tow units after the gear
+ change when de-stratifying the index, but DID when re-stratifying the
+ biomass. The change in tow units is now accounted for in both procedures.
+
+ 2. AC's code did not account for the zero sets when calculating the mean
+ abundance in each strata. This is now accounted for.)
 }
 \references{
 Modified code from AC's ExtractIndicators/R/VPAherring.R

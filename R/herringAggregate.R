@@ -1,7 +1,17 @@
 #'@title Allocates 4X herring index into sets based on the RV survey.
 #'@description This function is called by \code{biomassData} to allocate the 4X
-#'  herring index from XXXX into sets based on the proportion from the resaerch
+#'  herring index from XXX into sets based on the proportion from the resaerch
 #'  vessel survey.
+#'
+#'  q-correction is not applied because the index estimates total biomass.
+#'
+#'  Note:
+#'
+#'  I think there is one mistake in this: 1. The strata weights are different
+#'  than in stratifyBiomass() for before 1982
+#'
+#'  **Say that q-corrected and not q-corrected are the same #and that fixed
+#'  strata weights
 #'
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 #'  = ###)} in the global environment. This channel must have access to the XXXX
@@ -27,6 +37,12 @@
 #'
 #'  5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
 #'  \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}
+#'
+#'  The re-stratified biomass should equal the biomass index.
+#'
+#'  (Note: AC's code did not account for the different tow units after the gear
+#'  change when de-stratifying the index, but DID when re-stratifying the
+#'  biomass. The change in tow units is now accounted for in both procedures.)
 #'
 #'@inheritParams biomassData
 #'@references Modified code from AC's ExtractIndicators/R/VPAherring.R
@@ -66,10 +82,13 @@ herringAggregate <- function(path, s.year, e.year) {
                                      by = dat[c('YEAR', 'STRAT')], FUN = 'mean'))
   
   # Import strata weights and merge with dataframe of mean ABUNDANCE and BIOMASS estimates
-  # maybe change this to call the strat weigths in extra info (don't foget conversion factor!)
-  wts <- sqlQuery(channel,paste("select strat,area/((41./6080.2)*1.75) tunits from groundfish.gsstratum where strat between '470' and '495';"))
-  dat.agg1 <- merge(dat.agg, wts, by = 'STRAT')
+  st.weights  <- read.csv(file.path(path, "extra info", "stratweights.csv"))  # strata weights
+  dat.agg1 <- merge(dat.agg, st.weights, by = 'STRAT')
   
+  # Add tow units (different gear after 1981, so conversion from AREA to TUNITS depends on the year)
+  dat.agg1$TUNITS <- ifelse(dat.agg1$YEAR <= 1981, dat.agg1$AREA/((35./6080.2)*1.75),
+                            dat.agg1$AREA/((41./6080.2)*1.75))
+ 
   # Scale the mean ABUNDANCE and BIOMASS based on strata weights
   dat.agg1$AEST <- dat.agg1[,'ABUNDANCE']*dat.agg1[,'TUNITS']  # AEST: Estimated abundance in each strata
   dat.agg1$BEST <- dat.agg1[,'BIOMASS']*dat.agg1[,'TUNITS']    # BEST: Estimated biomass in each strata
@@ -80,7 +99,7 @@ herringAggregate <- function(path, s.year, e.year) {
   names(dat.agg2)[2] <-'AGGAEST'  # AGGAEST: total abundance over the whole area
   names(dat.agg2)[3] <-'AGGBEST'  # AGGBEST: total biomass over the whole area
   
-  # Calculate the proportion of total stratified ABUNDANCE and BIOMASS is from each strata
+  # Calculate the proportion of total stratified ABUNDANCE and BIOMASS from each strata
   dat.agg3 <- merge(dat.agg1, dat.agg2, by = 'YEAR') # Create dataframe with totals for each strata and whole area
   dat.agg3$PROP.A <- dat.agg3$AEST/dat.agg3$AGGAEST  # PROP.A: Proportion of total ABUNDANCE from each strata
   dat.agg3$PROP.B <- dat.agg3$BEST/dat.agg3$AGGBEST  # PROP.B: Proportion of total BIOMASS from each strata

@@ -16,8 +16,18 @@ data.}
 }
 \description{
 This function is called by \code{biomassData} to allocate the 4X
- herring index from XXXX into sets based on the proportion from the resaerch
+ herring index from XXX into sets based on the proportion from the resaerch
  vessel survey.
+
+ q-correction is not applied because the index estimates total biomass.
+
+ Note:
+
+ I think there is one mistake in this: 1. The strata weights are different
+ than in stratifyBiomass() for before 1982
+
+ **Say that q-corrected and not q-corrected are the same #and that fixed
+ strata weights
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
@@ -44,6 +54,12 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 
  5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
  \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}
+
+ The re-stratified biomass should equal the biomass index.
+
+ (Note: AC's code did not account for the different tow units after the gear
+ change when de-stratifying the index, but DID when re-stratifying the
+ biomass. The change in tow units is now accounted for in both procedures.)
 }
 \references{
 Modified code from AC's ExtractIndicators/R/VPAherring.R
