@@ -185,9 +185,12 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     h$QBIOMASS <- h$QABUNDANCE <- h$MEAN_WT_FISH <- h$ABUNDANCE <- 0
     names(dat)[1] <- 'SPECIES'
     
-    l <- rbind(dat, h, all = T)
+    l <- rbind(dat, h, all = T) # not sure why need all = T. This adds an extra
+    # row where MISSION = TRUE and SPECIES = TRUE (other columns = 1).
+    # I remove this row below
     
     dat <- l[!duplicated(l[,c('MISSION','SETNO','SPECIES')], fromLast = F),]
+    dat <- dat[-which(dat$MISSION == TRUE), ] # remove row where MISSION == TRUE
     
     # Add in the qadjusted data
     dat1 <- dat

@@ -16,18 +16,10 @@ data.}
 }
 \description{
 This function is called by \code{biomassData} to allocate the 4X
- herring index from XXX into sets based on the proportion from the resaerch
+ herring index from into sets based on the proportion from the resaerch
  vessel survey.
 
  q-correction is not applied because the index estimates total biomass.
-
- Note:
-
- I think there is one mistake in this: 1. The strata weights are different
- than in stratifyBiomass() for before 1982
-
- **Say that q-corrected and not q-corrected are the same #and that fixed
- strata weights
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd

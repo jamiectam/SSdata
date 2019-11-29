@@ -50,6 +50,7 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAN
   load(paste(path, "/data/landings/landings.RData", sep=""))    # load landings data 
   names(landings)[1] <- "ALLCODES"                              # change column name to "ALLCODES"
   
+  
   grp <- read.csv(paste(path,"/Extra Info/landingsgroupings.csv", sep = ""))  # import table to match NAFO_UNIT (in landings) to area ID codes
 
   prop.land.table <- read.csv(paste(path, "/Extra Info/SpeciesCodes.csv", sep = ""),
@@ -66,6 +67,8 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAN
     data.j <- merge(data.j, wl, by = 'NAFO_UNIT')                          # merge landings dataframe with the area data
     
     data.j <- merge(data.j, prop.land.table, by = "ALLCODES")              # merge landings dataframe with species codes data
+    data.j$CATCH <- as.numeric(data.j$CATCH)
+  
     data.j$CATCH <- data.j$CATCH * data.j$PROPORTION_OF_LANDINGS           # account for the proportion of landings of ALLCODES of each SPECIES
     land <- data.j[, c("ID", "YEAR", "SPECIES", "CATCH")]                  # create dataframe with the columns of interest
     
@@ -76,8 +79,8 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAN
     if(csv) write.csv(land, file = paste(path.output, ".csv",sep=""), row.names = FALSE)
     
     if(rdata) save(land, file = paste(path.output, ".RData", sep=""))
-    
-    print("landings dataframe exported")
 
   }
+  
+  print("landings dataframe exported")
 }
