@@ -22,6 +22,8 @@
 
 extractLAND <- function(path, e.year) {
   
+  print("running extractLAND()")
+  
   NAFO <- function(area=paste("4VS","4VN","4X","4W",sep="','")) {
     y <- 1968:1985
     out <- list()
