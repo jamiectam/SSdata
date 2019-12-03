@@ -48,10 +48,10 @@ If \code{update_LAND = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
  channel must have access to the XXXX databases.
 
- Area ID's are assiged from the file path/Extra Info/landingsgroupings.csv.
+ Area ID's are assiged from the file path/extra info/landingsgroupings.csv.
 
  Commercial and research vessel species codes are matched from the file
- path/Extra Info/SpeciesCodes.csv. the function accounts for the proportion
+ path/extra info/SpeciesCodes.csv. The function accounts for the proportion
  of landings of species with more than one RV code but one commercial code.
 }
 \references{

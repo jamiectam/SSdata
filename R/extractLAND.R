@@ -4,6 +4,9 @@
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 #'  = ###)} in the global environment. This channel must have access to the
 #'  NAFO, ZIF, and MARFIS databases.
+#'
+#'  Species are assigned to commercial landings groups based on the file
+#'  path/extra info/commercialGroups.csv
 #'@inheritParams biomassData
 #'@param path  Filepath indicating where to create the folder to store the
 #'  extracted data.
@@ -16,7 +19,7 @@
 #'  codes are the commercial landings codes.
 #'@references Modified code from AC's ExtractIndicators/R/getLandings.R
 #'@importFrom RODBC sqlQuery
-#@importFrom RODBC odbcConnect
+#'@importFrom RODBC odbcConnect
 #'@importFrom RODBC odbcClose
 #'@export
 
@@ -24,7 +27,7 @@ extractLAND <- function(path, e.year) {
   
   print("running extractLAND()")
   
-  NAFO <- function(area=paste("4VS","4VN","4X","4W",sep="','")) {
+  NAFO <- function(area=paste("4VS","4VN","4X","4W", sep="','")) {
     y <- 1968:1985
     out <- list()
     

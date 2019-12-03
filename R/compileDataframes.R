@@ -3,8 +3,9 @@
 #'  a format suitable for the \code{marindicators} package. These dataframes
 #'  correspond to \code{X}, \code{X_length}, \code{LenWt.table}, and \code{land}
 #'  in the \code{marindicators} package.
-#'@details Calls \code{biomassData()}, \code{stratifyBiomass()},
-#'  \code{RVdataframe()}, \code{LWdataframe()}, and \code{LANDdataframe()}.
+#'@details This function calls \code{biomassData()}, \code{stratifyBiomass()},
+#'  \code{RVdataframe()}, \code{LWdataframe()}, and \code{LANDdataframe()} to
+#'  extract and format the survey, length-weight, and commercial landings data.
 #'
 #'  User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
 #'  in the global environment. This channel must have access to the XXXX (RV)
@@ -16,41 +17,31 @@
 #'@param areas.RV Areas for which to compile fishery independent data. Default
 #'  is \code{areas.RV = c("strat", "nafo", "esswss", "shelf")}.
 #'@param areas.land Areas for which to compile commercial landings data. Default
-#'  is \code{areas.RV = c("nafo", "esswss", "shelf")}.
+#'  is \code{areas.land = c("nafo", "esswss", "shelf")}.
 #'@param csv Logical value indicating whether to export dataframe as a .csv
 #'  file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export dataframe as a .RData
 #'  file. Default is \code{rdata = TRUE}.
-#'@return The output is saved in directories created by the functions:
+#'@return The output is formatted for the \code{marindicators} package and saved
+#'  in directories created by the functions:
 #'
-#'  From \code{RVdataframe}: path/output/RV/area/lengthbased: annual
-#'  length-based biomass and abundance data, q-corrected and then stratified,
-#'  with columns \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH},
-#'  \code{BIOMASS} (UNITS) and \code{ABUNDANCE} (UNITS). File name is
-#'  area_lengthBased.RData; object name is \code{RVdata}.
+#'  \code{RVdataframe} creates a directory path/output/RV. In the RV folder is a
+#'  folder for each entry in \code{areas.RV}. In each area folder is a csv
+#'  and/or Rdata file for the specified combination of \code{lengthbased} and
+#'  \code{qadjusted}.
 #'
-#'  path/output/RV/area/notlengthBased: annual biomass and abundance data,
-#'  q-corrected and then stratified, with columns \code{ID}, \code{YEAR},
-#'  \code{SPECIES}, \code{BIOMASS} (UNITS) and \code{ABUNDANCE} (UNITS). File
-#'  name is area_notlengthBased.RData; object name is \code{RVdata}.
+#'  \code{LWdataframe()} creates a directory path/output/LengthWeight. In the
+#'  LengthWeight folder is a csv and/or Rdata file with length-weight data for
+#'  each area in \code{areas.RV}.
 #'
-#'  From \code{LWdataframe()}: path/output/LengthWeight: An Rdata file of annual
-#'  length-weight data with columns \code{ID}, \code{YEAR}, \code{SPECIES},
-#'  \code{LENGTH} (cm), \code{WEIGHT} (UNITS). File name is
-#'  area_LengthWeight.RData; object name is \code{lw}.
-#'
-#'  From \code{LANDdatafrmae()}: path/output/Landings: An Rdata file of annual
-#'  landings data with columns \code{ID}, \code{YEAR}, \code{SPECIES},
-#'  \code{CATCH} (UNITS). The species codes in \code{SPECIES} are the RV codes.
-#'  See \code{?LANDdataframe} for more information. File name is
-#'  area_landings.RData; object name is land.
-#'  
+#'  \code{LANDdatafrmae()} creates a directory path/output/Landings: In the
+#'  Landings folder is a csv and/or Rdata file for each area in /code{areas.land}.
 #'@references Original code by DD.
 #'@export
 
 
-compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo", "shelf", "esswss"),
-                              areas.land, csv = FALSE, rdata = TRUE){
+compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo", "esswss", "shelf"),
+                              areas.land = c("nafo", "esswss", "shelf"), csv = TRUE, rdata = TRUE){
 
   # Extract fishery independent data
   biomassData(path = path, s.year = s.year, e.year = e.year, s.strat = 440, e.strat = 495,

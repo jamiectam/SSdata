@@ -1,12 +1,12 @@
 Package: SSdata
-Title: Extracts fishery independent and commercial landings data for the Scotia Shelf
+Title: Extracts Fishery Independent and Dependent Data for the Scotian Shelf from DFO-Maritimes Databases
 Version: 0.0.0.9000
-Date: 2019-11-07
+Date: 2019-12-02
 Authors: Danielle Dempsey, Adam Cook
 Authors@R: c(person("Danielle", "Dempsey", email="Danielle.Dempsey@dfo-mpo.gc.ca", role = c("aut", "cre")),
            person("Adam", "Cook", email="Adam.Cook@dfo-mpo.gc.ca", role= "aut"))
 Maintainer: Danielle Dempsey <Danielle.Dempsey@dfo-mpo.gc.ca>
-Description: Extracts fishery independent and commercial landings data for different spatial scales on the Scotian Shelf (strata, NAFO, ESS/WSS and Shelf), and formats it for use with the marindicators package (optional).
+Description: Provides functions to extract fishery independent and dependent data for the Scotian Shelf from DFO-Maritimes databases. Following Bundy, Gomez, and Cook (2017), fishery independent data can be extracted for four different spatial scales: Shelf, Ess/WSS, NAFO divisions,and strata. Commercial landings data are not readily available at the strata scale, and so fishery dependent data can be extracted for three spatial scales: Shelf, Ess/WSS, and NAFO divisions. Dataframes can be formatted for use in the marindicators package.
 Depends:
     R (>= 3.6.0)
 Imports:

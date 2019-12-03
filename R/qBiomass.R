@@ -1,43 +1,44 @@
 #'@title Applies length-based q-adjustment to biomass and abundance data at the
 #'  set level
 #'@description Applies length-based q-adjustments to biomass and abundance data
-#'  at the set level and returns to the results to `biomassData()`.
-#'
+#'  at the set level and returns to the results to \code{biomassData()}.
 #'@details \code{qBiomass()} is called by the \code{biomassData()} function.
 #'  Arguments are supplied to \code{qBiomass()} from the \code{catch_coefs}
-#'  table (gomezc.indiseas_catchability_coeffs), which includes columns
-#'  \code{FUNGROUP}, \code{Q}, and \code{LENCORR} for 88 \code{SPECIES}.
+#'  table (SQL call to gomezc.indiseas_catchability_coeffs), which includes
+#'  columns \code{FUNGROUP}, \code{Q}, and \code{LENCORR} for 88 \code{SPECIES}.
 #'  \code{qBiomass()} loops over each row of this table for each year supplied
 #'  to \code{biomassData()}.
 #'
 #'  \code{qBiomass()} obtains numbers (\code{ABUNDANCE}) at length for the given
-#'  \code{species} for 1 cm intervals from the Oracle database.
+#'  \code{species} for 1 cm intervals from the XXXX database.
 #'
 #'  Biomass estimates are based on the length-weight relationship:
 #'  \deqn{ln(Weight) = a + ln(Length) * b} The function obtains length and
-#'  weight data for \code{species} in \code{year} from Oracle and estimates
+#'  weight data for \code{species} in \code{year} from XXXX and estimates
 #'  \eqn{a} and \eqn{b}. The average weight of fish at each length is then
 #'  estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the biomass
 #'  estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
 #'
 #'  If there are less than 100 length-weight observations in the database for
-#'  the given \code{species} in `year`, the function will include observations
-#'  from the 5 years before and after `year`. If there are still less than 100
-#'  observations, data from all years will be included. This can result is some
-#'  discrepancies when biomass data is extracted in different years.
+#'  the given \code{species} in \code{year}, the function will include
+#'  observations from the 5 years before and after \code{year}. If there are
+#'  still less than 100 observations, data from all years will be included. This
+#'  can result is some discrepancies when biomass data is extracted in different
+#'  years.
 #'
 #'  \bold{q-correction}
 #'
 #'  q is calculated based on the arguments \code{fun_group} and \code{q} using
-#'  the equation:
-#'  \deqn{q = g1*(exp(a1+b1*(\code{LENGTH}*\code{lencorr})))/(1+exp(a1+b1*(\code{LENGTH}*\code{lencorr})))}
-#'   where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each functional
-#'  group, \code{len_corr} is an argument provided by \code{biomassData()}, and
-#'  \code{LENGTH} is the length interval (cm).
+#'  the equation: \deqn{q =
+#'  g1*(exp(a1+b1*(\code{LENGTH}*\code{lencorr})))/(1+exp(a1+b1*(\code{LENGTH}*\code{lencorr})))}
+#'   where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each
+#'  \code{fun_group}, \code{len_corr} is an argument provided by
+#'  \code{biomassData()}, and \code{LENGTH} is the length interval (cm).
 #'
 #'  q-corrected abundance: \eqn{\code{QABUNDANCE} = \code{ABUNDANCE}/q}.
 #'
-#'  q-corrected biomass: \eqn{\code{QBIOMASS} = \code{QABUNDANCE} * Weight_{Avg}}
+#'  q-corrected biomass: \eqn{\code{QBIOMASS} = \code{QABUNDANCE} *
+#'  Weight_{Avg}}
 #'
 #'@param species Species code from the \code{catch_coeffs} table. This argument
 #'  is supplied by \code{biomassData()}.
@@ -48,7 +49,9 @@
 #'  argument is supplied by \code{biomassData()}.
 #'@param len_corr Initial length correction from the \code{catch_coeffs} table.
 #'  This argument is supplied by \code{biomassData()}.
-#'@return Returns the q-ajusted biomass and abundance to \code{biomassData()}.
+#'@return Returns the not q-adjusted and q-adjusted length-based biomass and
+#'  abundance to \code{biomassData()} for species that have length-based
+#'  correction factors.
 #'@references Modified code from AC's ExtractIndicators/R/qBiomass (function
 #'  \code{biomass_q_adj()})
 #'@importFrom stats coef
@@ -57,7 +60,7 @@
 #'@importFrom RODBC sqlQuery
 #'@export
 
-qBiomass <- function(species, year,  fun_group = NA, q = 0, len_corr = 1) {
+qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
   
   area = "4VWX"
   
@@ -204,7 +207,6 @@ qBiomass <- function(species, year,  fun_group = NA, q = 0, len_corr = 1) {
       a.est <- coef(out)[1]
       b.est <- coef(out)[2]
       
-
       #q-adj biomass estimate
       aa$est.wt <- exp(a.est+log(aa$FLEN)*b.est)
       aa$qBiomass <- aa$corCatch*aa$est.wt

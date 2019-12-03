@@ -2,16 +2,16 @@
 #'  package
 #'@description This function imports data from
 #'  path/data/landings.landings.RData, attaches labels for the spatial scales of
-#'  interest ("shelf", "esswss", and "nafo") in column \code{ID}, and replaces
-#'  commercial species codes with the research vessel species codes.
+#'  interest (shelf, ESS/WSS, and/or NAFO divisions) in column \code{ID}, and
+#'  replaces commercial species codes with the research vessel species codes.
 #'@details If \code{update_LAND = TRUE}, user must define \code{channel =
 #'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
-#'  channel must have access to the XXXX databases.
+#'  channel must have access to the NAFO, ZIF, and MARFIS databases.
 #'
-#'  Area ID's are assiged from the file path/Extra Info/landingsgroupings.csv.
+#'  Area ID's are assiged from the file path/extra info/landingsgroupings.csv.
 #'
 #'  Commercial and research vessel species codes are matched from the file
-#'  path/Extra Info/SpeciesCodes.csv. the function accounts for the proportion
+#'  path/extra info/SpeciesCodes.csv. The function accounts for the proportion
 #'  of landings of species with more than one RV code but one commercial code.
 #'
 #'@param path The filepath to the data folder created by
@@ -28,12 +28,13 @@
 #'  = TRUE}, user must define \code{channel} in the global environment (see
 #'  \code{Details}).
 #'@param e.year If \code{update_LAND = TRUE}, \code{e.year} is the final year
-#'  for which to extract the landings data. Default is \code{e.year = NULL}. 
-#'@return This function creates a directory output/Landings and stores the
-#'  landings dataframe in area_land.RData (object name is \code{land}) and/or
-#'  area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
-#'  \code{YEAR}, \code{SPECIES} (the research vessel species code) and
-#'  \code{CATCH} (UNITS).
+#'  for which to extract the landings data. Default is \code{e.year = NULL}.
+#'@return This function creates a directory path/output/Landings and stores the
+#'  landings dataframe for each area in area_land.RData (object name is
+#'  \code{land}) and/or area_land.csv. The dataframe has 4 columns: \code{ID}
+#'  (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel species
+#'  code) and \code{CATCH} (UNITS). These files are formatted for the
+#'  \code{marindicators} package.
 #'@references Original code by DD.
 #'@importFrom utils write.csv
 #'@importFrom utils read.csv
@@ -49,7 +50,6 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAN
   # Import data
   load(paste(path, "/data/landings/landings.RData", sep=""))    # load landings data 
   names(landings)[1] <- "ALLCODES"                              # change column name to "ALLCODES"
-  
   
   grp <- read.csv(paste(path,"/Extra Info/landingsgroupings.csv", sep = ""))  # import table to match NAFO_UNIT (in landings) to area ID codes
 

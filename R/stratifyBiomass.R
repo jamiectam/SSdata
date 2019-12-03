@@ -3,8 +3,8 @@
 #'  weights in "stratweights.csv" in the extra info folder. User can choose
 #'  whether to return length-based and/or q-corrected values.
 #'@details Requires file path/extra info/stratweights/csv. stratweights.csv has
-#'  two columns: \code{STRAT} and the corresponding \code{AREA}.Each \code{AREA}
-#'  is converted to tow units using the conversion \code{TOW UNITS =
+#'  two columns: \code{STRAT} and the corresponding \code{AREA}. Each
+#'  \code{AREA} is converted to tow units using the conversion \code{TOW UNITS =
 #'  AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
 #'  AREA/((41./6080.2)*1.75)} after 1981.
 #'@inheritParams biomassData

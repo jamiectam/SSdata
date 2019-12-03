@@ -9,22 +9,23 @@
 #'@param areas Areas for which to extract and stratify the fishery independent
 #'  survey data. A separate dataframe will be exported for each area. Default is
 #'  \code{areas = c("shelf", "esswss", "nafo", "strat")}.
-#'@return Returns data extracted and stratified by \code{biomassData()} and
+#'@return Returns data extracted by \code{biomassData()} and stratified by
 #'  \code{stratifyBiomass()}.
 #'
 #'  From \code{biomassData()}:
 #'
-#'  **Not length-based** path/data/aggregate/ stores an RData file each year
-#'  called year.RData (object name \code{dat}). \code{dat} has 9 columns:
-#'  \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT},
-#'  \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
+#'  Not length-based data are stored in path/data/aggregate/. This folder
+#'  includes an RData file for each year called year.RData (object name
+#'  \code{dat}). \code{dat} has 9 columns: \code{MISSION}, \code{SETNO},
+#'  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
+#'  \code{QBIOMASS} and \code{QABUNDANCE}.
 #'
-#'  **Length-based** path/data/length/ stores an RData file for each year called
-#'  num_biom_at_length_year.RData (object name \code{out}). \code{out} has 10
-#'  columns: \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR},
-#'  \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and
-#'  \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is length in 1 cm
-#'  increments.
+#'  Length-based data is stored in path/data/length/.  This folder includes an
+#'  RData file for each year called num_biom_at_length_year.RData (object name
+#'  \code{out}). \code{out} has 10 columns: \code{MISSION}, \code{SETNO},
+#'  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
+#'  \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
+#'  length in 1 cm increments.
 #'
 #'  From\code{stratifyBiomass()}:
 #'
@@ -40,14 +41,15 @@
 #'  if(!lengthBased & qadjusted), then folder is named "notlengthbased_notqadj"
 #'
 #'  Inside "folder" is a folder for each entry in \code{area}. Within each area
-#'  folder is a .RData file for each year from s.year to e.year called
-#'  year.RData (object name \code{out}).
+#'  folder is a .RData file for each year from \code{s.year} to \code{e.year}
+#'  called year.RData (object name \code{out}).
 #'
-#'  \code{out} has 5 columns if \code{lengthbased = TRUE}: \code{SPECIES} ,
-#'  \code{ID}, \code{FLEN}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'  If \code{lengthbased = TRUE}, \code{out} has 5 columns : \code{SPECIES} ,
+#'  \code{ID}, \code{FLEN} (cm), \code{BIOMASS} (kg), and \code{ABUNDANCE}
+#'  (numbers).
 #'
-#'  \code{out} has 4 columns if \code{lengthbased = FALSE}: \code{SPECIES},
-#'  \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
+#'  If \code{lengthbased = FALSE}, \code{out} has 4 columns: \code{SPECIES},
+#'  \code{ID}, \code{BIOMASS} (kg), and \code{ABUNDANCE} (numbers).
 #'
 #'@references Original code by DD.
 #'@export

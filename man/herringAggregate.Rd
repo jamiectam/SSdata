@@ -26,6 +26,8 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
  = ###)} in the global environment. This channel must have access to the XXXX
  databases.
 
+  **Add description of stratweights here
+
  The 4X herring index is based on XXXX. This data must be stored in
  path/extra info/**name.csv.
 

@@ -3,13 +3,14 @@
 #'  \code{STRAT}, and then assigns an area ID based on the strata number in
 #'  \code{STRAT}.
 #'@param dat A dataframe that includes the column \code{STRAT}, which has
-#'  entries indicating the strata on the Scotian Shelf (e.g., values from 440 to
-#'  495).
+#'  entries corresponding to the strata on the Scotian Shelf (e.g., values from
+#'  440 to 495).
 #'@param area Character string indicating the spatial scale for which to assign
 #'  areas IDs. Options are: \code{"strat"}, \code{"nafo"}, \code{"esswss"},
-#'  \code{"shelf"}, \code{"indiseas"}, \code{"pollockwest"}, \code{"pollockeast"},
-#'  \code{"unit2redfish"}, \code{"unit3redfish"}, \code{"silverhake"}.
-#'@return The function returns dat with an extra column: \code{ID}
+#'  \code{"shelf"}, \code{"indiseas"}, \code{"pollockwest"},
+#'  \code{"pollockeast"}, \code{"unit2redfish"}, \code{"unit3redfish"},
+#'  \code{"silverhake"}.
+#'@return The function returns \code{dat} with an extra column: \code{ID}
 #'@references Modified code from AC's ExtractIndicators/R/defineGroups.R.
 #'@export
 

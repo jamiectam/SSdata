@@ -3,36 +3,39 @@
 #'@description This function is called by \code{biomassData} to allocate the 4X
 #'  herring index from XXXX into sets and length classes based on the proportion
 #'  from the resaerch vessel survey.
-#'
-#'  **I think there are two mistakes in here: 1. The zero sets are not used to
-#'  calculate the strata means. 2. The strata weights are different than in
-#'  stratifyBiomass() for before 1982
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 #'  = ###)} in the global environment. This channel must have access to the XXXX
 #'  databases.
 #'
-#'**Add description of stratweights here
+#'  This function requires file path/extra info/stratweights/csv.
+#'  stratweights.csv has two columns: \code{STRAT} and the corresponding
+#'  \code{AREA}. Each \code{AREA} is converted to tow units using the conversion
+#'  \code{TOW UNITS = AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
+#'  AREA/((41./6080.2)*1.75)} after 1981
 #'
 #'  The 4X length-based herring index is based on XXXX. This data must be stored
 #'  in path/extra info/**name.csv.
 #'
-#'  The /code{ABUNDNACE} in **name.csv is allocated across the research vessel
+#'  The /code{ABUNDANCE} in **name.csv is allocated across the research vessel
 #'  summer strata and length classes observed in the survey based on a
 #'  stratification/destratification scheme:
 #'
 #'  1. Stratify research vessel survey \code{ABUNDANCE} and determine the total
 #'  \code{ABUNDANCE} over the whole area.
 #'
-#'  2. Calculate the proportion of the total \code{ABUNDANCE} that is
+#'  2. Calculate proportion of biomass and abundance at each length (1 cm
+#'  intervals).
+#'
+#'  3. Calculate the proportion of the total \code{ABUNDANCE} that is
 #'  contributed by each strata.
 #'
-#'  3.  Calculate the proportion of the mean \code{ABUNDANCE} in each strata
+#'  4.  Calculate the proportion of the mean \code{ABUNDANCE} in each strata
 #'  that is contributed by each set.
 #'
-#'  4. Use the proportions in 2. and 3. to destratify the 4X herring index
-#'  \code{ABUNDACE}.
+#'  5. Use the proportions in 2, 3, and 4 to destratify the 4X length-based
+#'  herring index \code{ABUNDACE}.
 #'
-#'  5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
+#'  6. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
 #'  \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
 #'
 #'  (Notes:
@@ -94,11 +97,7 @@ herringAtLength <- function(path, s.year, e.year) {
                    data = aa, FUN = sum)                                          # Changed to data = aa (from data = dat in AC's ExtractIndicators code)
   
   dat.agg <- aggregate(ABUNDANCE ~ YEAR + STRAT + FLEN, data = dat, FUN = 'mean') # Calculate mean abundance within each strata
-  
-  # Import strata weights and merge with dat ***these are different from stratifyBiomass()
- # wts <- sqlQuery(channel,paste("select strat,area, area/((41./6080.2)*1.75) tunits from groundfish.gsstratum where strat between '470' and '495';"))
-  #dat.agg1 <- merge(dat.agg,wts,by='STRAT')
-  
+
   # Import strata weights and merge with dataframe of mean ABUNDANCE and BIOMASS estimates
   st.weights  <- read.csv(file.path(path, "extra info", "stratweights.csv"))  # strata weights
   dat.agg1 <- merge(dat.agg, st.weights, by = 'STRAT')

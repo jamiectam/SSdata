@@ -1,7 +1,7 @@
 #'@title Formats length-weight data for use in the \code{marindicators} package
 #'@description This function imports data from path/data/lenwgt adds column
-#'  \code{YEAR}, and attaches labels for the spatial scales of interest
-#'  ("shelf", "esswss", "nafo", "strat") in column \code{ID}.
+#'  \code{YEAR}, and attaches labels for the spatial scales of interest (shelf,
+#'  ESS/WSS, NAFO divisions, and/or strata) in column \code{ID}.
 #'@details If \code{update_LW = TRUE}, user must define \code{channel =
 #'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
 #'  channel must have access to the XXXX databases.
@@ -12,11 +12,12 @@
 #'  extracted, use the default \code{update_LW = FALSE}. If \code{update_LW =
 #'  TRUE}, user must define \code{channel} in the global environment (see
 #'  \code{Details}).
-#'@return This function creates a directory path/output/LengthWeight to save the
-#'  exported data. A separate .RData file (area_LengthWeigth.RData, object name
-#'  \code{lw}) and/or .csv file (area_LengthWeight.csv) is exported for each
-#'  area. \code{lw} has 5 columns: \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH}
-#'  (cm), \code{WEIGHT} (UNITS).
+#'@return This function creates a directory path/output/LengthWeight and stores
+#'  the length-weight dataframe for each area in area_LengthWeight.RData (object
+#'  name is \code{lw}) and/or area_LengthWeight.csv. The dataframe has 5
+#'  columns: \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH} (cm), and
+#'  \code{WEIGHT} (g). These files are formatted for the \code{marindicators}
+#'  package.
 #'@references Original code by DD.
 #'@importFrom utils write.csv
 #'@export
@@ -50,9 +51,7 @@ LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
   
   # now use the defineAreas function to identify which spatial scale each strata belongs to
   # i.e., add "ID" column to data
-  #source("C:/RProjects/ExtractIndicators/R/defineAreas.R")
-  #areas =  c('strat','nafo','esswss','shelf')
-  
+
   for(j in 1:length(areas)){
     
     areas.j = areas[j]

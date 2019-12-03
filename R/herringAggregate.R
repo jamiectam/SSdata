@@ -1,7 +1,7 @@
 #'@title Allocates 4X herring index into sets based on the RV survey.
 #'@description This function is called by \code{biomassData} to allocate the 4X
-#'  herring index from into sets based on the proportion from the resaerch
-#'  vessel survey.
+#'  herring index into sets based on proportions from the research vessel
+#'  survey.
 #'
 #'  q-correction is not applied because the index estimates total biomass.
 #'
@@ -9,25 +9,28 @@
 #'  = ###)} in the global environment. This channel must have access to the XXXX
 #'  databases.
 #'
-#'   **Add description of stratweights here
+#'  This function requires file path/extra info/stratweights/csv.
+#'  stratweights.csv has two columns: \code{STRAT} and the corresponding
+#'  \code{AREA}. Each \code{AREA} is converted to tow units using the conversion
+#'  \code{TOW UNITS = AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
+#'  AREA/((41./6080.2)*1.75)} after 1981
 #'
 #'  The 4X herring index is based on XXXX. This data must be stored in
 #'  path/extra info/**name.csv.
 #'
-#'  The /code{ABUNDNACE} in **name.csv is allocated across the research vessel
+#'  The \code{ABUNDANCE} in **name.csv is allocated across the research vessel
 #'  summer strata based on a stratification/destratification scheme:
 #'
 #'  1. Stratify research vessel survey \code{ABUNDANCE} and determine the total
 #'  \code{ABUNDANCE} over the whole area.
 #'
-#'  2. Calculate the proportion of the total \code{ABUNDANCE} that is
-#'  contributed by each strata.
+#'  2. Calculate the proportion of the total \code{ABUNDANCE} in each strata.
 #'
 #'  3.  Calculate the proportion of the mean \code{ABUNDANCE} in each strata
 #'  that is contributed by each set.
 #'
 #'  4. Use the proportions in 2. and 3. to destratify the 4X herring index
-#'  \code{ABUNDACE}.
+#'  \code{ABUNDANCE}.
 #'
 #'  5. Use the mean weight of fish to calculate the \code{BIOMASS} in each set:
 #'  \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}
