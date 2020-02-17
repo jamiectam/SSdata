@@ -16,8 +16,7 @@ LWdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
 
 \item{areas}{Areas for which to format data. A separate dataframe will be
 exported for each area. Default is \code{areas = c("shelf", "esswss",
-"nafo", "strat")}. If \code{update_RV = TRUE}, user must define
-\code{channel} in the global environment (see \code{Details}).}
+"nafo", "strat")}.}
 
 \item{update_LW}{Logical parameter indicating whether to run
 \code{extractLW()}. This can be time consuming, so if LW data is already
@@ -32,16 +31,17 @@ file. Default is \code{csv = TRUE}.}
 file. Default is \code{rdata = TRUE}.}
 }
 \value{
-This function creates a directory path/output/LengthWeight to save the
- exported data. A separate .RData file (area_LengthWeigth.RData, object name
- \code{lw}) and/or .csv file (area_LengthWeight.csv) is exported for each
- area. \code{lw} has 5 columns: \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH}
- (cm), \code{WEIGHT} (UNITS).
+This function creates a directory path/output/LengthWeight and stores
+ the length-weight dataframe for each area in area_LengthWeight.RData (object
+ name is \code{lw}) and/or area_LengthWeight.csv. The dataframe has 5
+ columns: \code{ID}, \code{YEAR}, \code{SPECIES}, \code{LENGTH} (cm), and
+ \code{WEIGHT} (g). These files are formatted for the \code{marindicators}
+ package.
 }
 \description{
 This function imports data from path/data/lenwgt adds column
- \code{YEAR}, and attaches labels for the spatial scales of interest
- ("shelf", "esswss", "nafo", "strat") in column \code{ID}.
+ \code{YEAR}, and attaches labels for the spatial scales of interest (shelf,
+ ESS/WSS, NAFO divisions, and/or strata) in column \code{ID}.
 }
 \details{
 If \code{update_LW = TRUE}, user must define \code{channel =

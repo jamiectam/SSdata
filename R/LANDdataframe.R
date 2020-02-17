@@ -1,9 +1,12 @@
 #'@title Formats commercial landings data for use in the \code{marindicators}
 #'  package
-#'@description This function imports data from
-#'  path/data/landings.landings.RData, attaches labels for the spatial scales of
-#'  interest (shelf, ESS/WSS, and/or NAFO divisions) in column \code{ID}, and
-#'  replaces commercial species codes with the research vessel species codes.
+#'@description **added a line to sum catch of each species for each year + area.
+#'  DO I NEED THIS OR IS IT DONE IN marindicators?
+#'
+#'  This function imports data from path/data/landings.landings.RData, attaches
+#'  labels for the spatial scales of interest (shelf, ESS/WSS, and/or NAFO
+#'  divisions) in column \code{ID}, and replaces commercial species codes with
+#'  the research vessel species codes.
 #'@details If \code{update_LAND = TRUE}, user must define \code{channel =
 #'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
 #'  channel must have access to the NAFO, ZIF, and MARFIS databases.
@@ -71,6 +74,8 @@ LANDdataframe <- function(path, areas = c("shelf", "esswss", "nafo"), update_LAN
   
     data.j$CATCH <- data.j$CATCH * data.j$PROPORTION_OF_LANDINGS           # account for the proportion of landings of ALLCODES of each SPECIES
     land <- data.j[, c("ID", "YEAR", "SPECIES", "CATCH")]                  # create dataframe with the columns of interest
+    land <- aggregate(CATCH ~ ID + YEAR + SPECIES, data = land, FUN = sum) # added this line Feb 4 2020 
+    # above line is needed to aggregate CATCH over the different sub-units in grp (e.g., ESS = 4W,  4VS, 4VSB,  4VSU, etc)
     
     dir.create(paste(path, "/output/Landings", sep = ""), recursive = T, showWarnings = F)
     path.output <- paste(path, "/output/Landings/", areas.j, "_land", sep = "")

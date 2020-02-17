@@ -1,4 +1,4 @@
-#'@title Assigns area ID based on strata
+#'@title Assigns area ID based on strata. chnaged
 #'@description Adds column \code{ID} to a dataframe that already has a column
 #'  \code{STRAT}, and then assigns an area ID based on the strata number in
 #'  \code{STRAT}.

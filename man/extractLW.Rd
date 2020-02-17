@@ -18,7 +18,7 @@ data.}
 This function creates a directory to store extracted data:
  path/data/lenwgt stores a separate file for each year, called lwyear.RData
  (object name \code{wt}). \code{wt} has 4 columns: \code{STRAT},
- \code{SPECIES}, \code{FLEN} (length in cm), \code{FWT} (weight in UNITS).
+ \code{SPECIES}, \code{FLEN} (length in cm), \code{FWT} (weight in g).
 }
 \description{
 Extracts annual length-weight data from fishery independent

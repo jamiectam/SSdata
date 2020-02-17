@@ -31,22 +31,26 @@ for which to extract the landings data. Default is \code{e.year = NULL}.}
 a .RData file. Default is \code{rdata = TRUE}.}
 }
 \value{
-This function creates a directory output/Landings and stores the
- landings dataframe in area_land.RData (object name is \code{land}) and/or
- area_land.csv. The dataframe has 4 columns: \code{ID} (the area ID),
- \code{YEAR}, \code{SPECIES} (the research vessel species code) and
- \code{CATCH} (UNITS).
+This function creates a directory path/output/Landings and stores the
+ landings dataframe for each area in area_land.RData (object name is
+ \code{land}) and/or area_land.csv. The dataframe has 4 columns: \code{ID}
+ (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel species
+ code) and \code{CATCH} (UNITS). These files are formatted for the
+ \code{marindicators} package.
 }
 \description{
-This function imports data from
- path/data/landings.landings.RData, attaches labels for the spatial scales of
- interest ("shelf", "esswss", and "nafo") in column \code{ID}, and replaces
- commercial species codes with the research vessel species codes.
+**added a line to sum catch of each species for each year + area.
+ DO I NEED THIS OR IS IT DONE IN marindicators?
+
+ This function imports data from path/data/landings.landings.RData, attaches
+ labels for the spatial scales of interest (shelf, ESS/WSS, and/or NAFO
+ divisions) in column \code{ID}, and replaces commercial species codes with
+ the research vessel species codes.
 }
 \details{
 If \code{update_LAND = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
- channel must have access to the XXXX databases.
+ channel must have access to the NAFO, ZIF, and MARFIS databases.
 
  Area ID's are assiged from the file path/extra info/landingsgroupings.csv.
 

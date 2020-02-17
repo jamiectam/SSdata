@@ -48,8 +48,7 @@
 #'@export
 
 
-stratifyBiomass <- function(path, s.year, e.year, lengthbased = lengthbased, 
-                            qadjusted = qadjusted, 
+stratifyBiomass <- function(path, s.year, e.year, lengthbased, qadjusted, 
                             areas = c('esswss','nafo','shelf','strat')	) {
   
   print("running stratifyBiomass()")

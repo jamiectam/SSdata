@@ -4,8 +4,8 @@
 \alias{stratifyBiomass}
 \title{Stratifies biomass and abundance estimates}
 \usage{
-stratifyBiomass(path, s.year, e.year, lengthbased = lengthbased,
-  qadjusted = qadjusted, areas = c("esswss", "nafo", "shelf", "strat"))
+stratifyBiomass(path, s.year, e.year, lengthbased, qadjusted,
+  areas = c("esswss", "nafo", "shelf", "strat"))
 }
 \arguments{
 \item{path}{Filepath indicating where to create folder to store the stratified
@@ -61,8 +61,8 @@ Stratifies the biomass and abundance estimates based on the
 }
 \details{
 Requires file path/extra info/stratweights/csv. stratweights.csv has
- two columns: \code{STRAT} and the corresponding \code{AREA}.Each \code{AREA}
- is converted to tow units using the conversion \code{TOW UNITS =
+ two columns: \code{STRAT} and the corresponding \code{AREA}. Each
+ \code{AREA} is converted to tow units using the conversion \code{TOW UNITS =
  AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
  AREA/((41./6080.2)*1.75)} after 1981.
 }

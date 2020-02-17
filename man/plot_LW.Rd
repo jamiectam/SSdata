@@ -7,14 +7,13 @@
 plot_LW(species, year)
 }
 \arguments{
-\item{species}{Species code for which to extract data. Must be one of the 88
-species in the \code{catch_coefs} table in \code{biomassData}.}
+\item{species}{Species code for which to extract data.}
 
 \item{year}{Year for which to extract data. Must be one of the 88 species in
-the \code{catch_coefs} table in \code{biomassData}.}
+the \code{catch_coefs} table in \code{biomassData()}.}
 }
 \value{
-A plot of weight vs. length.
+A plot of weight (g) vs. length (cm).
 }
 \description{
 Plots length-weight data for given species and year. Displays the

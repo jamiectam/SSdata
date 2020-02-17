@@ -11,7 +11,7 @@
 #'@param x Fishery indepdendet survey data as extracted by \code{biomassData()}.
 #'@return This function returns the corrected biomass and abundance data to
 #'  function \code{biomassData()}.
-#'@references Original code by DD.
+#'@references Modified code from AC's ExtractIndicators/R/vesselCorrection.R.
 
 
 vesselCorr <- function(x) {

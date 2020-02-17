@@ -1,7 +1,8 @@
 #'@title Formats fishery independey survey data for use in the
 #'  \code{marindicators} package
-#'@description This function imports data exported by \code{stratifyBiomass()},
-#'  adds column \code{YEAR}, and binds all years together.
+#'@description **Double check that this sums over species for each year This
+#'  function imports data exported by \code{stratifyBiomass()}, adds column
+#'  \code{YEAR}, and binds all years together.
 #'@details If \code{update_RV = TRUE}, user must define \code{channel =
 #'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
 #'  channel must have access to the XXXX databases.
@@ -20,19 +21,19 @@
 #'  and areas is time consuming, so if data is already extracted, use the
 #'  default \code{update_biomass = FALSE}.  If \code{update_RV = TRUE}, user
 #'  must define \code{channel} in the global environment (see \code{Details}).
-#'@return This function creates a directory path/output/RV to save the exported
-#'  data. In the RV folder is a folder for each entry in \code{area}. In each
-#'  area folder is a csv and/or Rdata file for the specified combination of
-#'  \code{lengthbased} and \code{qadjusted} (object name \code{RVdata}. These
-#'  files are formatted for the \code{marindicators} package.
+#'@return This function creates a directory path/output/RV/area for each entry
+#'  in \code{area}. In each area folder is a csv and/or Rdata file for the
+#'  specified combination of \code{lengthbased} and \code{qadjusted} (object
+#'  name \code{RVdata}). These files are formatted for the \code{marindicators}
+#'  package.
 #'
 #'  If \code{lengthbased = TRUE}, then \code{RVdata} has 6 columns: \code{YEAR},
-#'  \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and
-#'  \code{ABUNDANCE}.
+#'  \code{SPECIES}, \code{ID}, \code{LENGTH} (cm), \code{BIOMASS} (kg), and
+#'  \code{ABUNDANCE} (numbers).
 #'
 #'  If \code{lengthbased = FALSE}, then \code{RVdata} has 5 columns:
-#'  \code{YEAR}, \code{SPECIES}, \code{ID}, \code{BIOMASS}, and
-#'  \code{ABUNDANCE}.
+#'  \code{YEAR}, \code{SPECIES}, \code{ID}, \code{BIOMASS} (kg), and
+#'  \code{ABUNDANCE} (numbers).
 #'
 #'@references Original code by DD.
 #'@importFrom utils write.csv

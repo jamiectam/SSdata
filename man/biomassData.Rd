@@ -12,10 +12,12 @@ biomassData(path, s.strat = 440, e.strat = 495, s.year, e.year,
 data.}
 
 \item{s.strat}{Stratum for which to begin data extraction. Default is
-\code{s.strat = 440}.}
+\code{s.strat = 440}. Code will stop with an error message if \code{s.strat
+< 440} or \code{s.strat > 495}.}
 
 \item{e.strat}{Stratum for which to end data extraction. Default is
-\code{e.strat = 495}.}
+\code{e.strat = 495}.  Code will stop with an error message if \code{e.strat
+< 440} or \code{e.strat > 495}.}
 
 \item{s.year}{Year for which to begin data extraction.}
 
@@ -28,41 +30,57 @@ correction to \code{BIOMASS} and \code{ABUNDANCE}. Default is
 \value{
 Creates directories to store extracted data.
 
- **Not length-based** path/data/aggregate/ stores an RData file each year
- called year.RData (object name \code{dat}). \code{dat} has 9 columns:
- \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR}, \code{STRAT},
- \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and \code{QABUNDANCE}.
+ Not length-based data are stored in path/data/aggregate/. This folder
+ includes an RData file for each year called year.RData (object name
+ \code{dat}). \code{dat} has 9 columns: \code{MISSION}, \code{SETNO},
+ \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
+ \code{QBIOMASS} and \code{QABUNDANCE}.
 
- **Length-based** path/data/length/ stores an RData file for each year called
- num_biom_at_length_year.RData (object name \code{out}). \code{out} has 10
- columns: \code{MISSION}, \code{SETNO}, \code{SPECIES}, \code{YEAR},
- \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE}, \code{QBIOMASS} and
- \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is length in 1 cm
- increments.
+ Length-based data is stored in path/data/length/.  This folder includes an
+ RData file for each year called num_biom_at_length_year.RData (object name
+ \code{out}). \code{out} has 10 columns: \code{MISSION}, \code{SETNO},
+ \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
+ \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
+ length in 1 cm increments.
 
- Biomass units are: XXX Abundance units are: XXXX
+ Biomass units are: kg Abundance units are: numbers
 }
 \description{
-Extracts and exports annual length-based and not length-based
- (i.e., aggregated over length) biomass and abundance data for the Scotian
- Shelf. \code{QABUNDANCE} and \code{QBIOMASS} are q-adjusted at the set level
- (i.e., before stratification).
-
- Herring biomass/abundance is treated separately from the other species.
+Extracts and exports annual q-adjusted and not q-adjusted,
+ length-based (separated into 1 cm length classes) and not length-based
+ (aggregated over length) biomass and abundance data from the Scotian Shelf
+ summer research vessel surveys. q-adjustments are applied at the set level
+ (before stratification).
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
- = ###)} in the global environment. This channel must have access to the XXXX
- databases.
+ = ###)} in the global environment. This channel must have access to the
+ XXX database.
+
+ The research vessel survey is not used as an index of herring in 4X (the
+ Western Scotian Shelf). Here, the survey observations for 4X herring are
+ replaced with biomass and abundance estimates de-stratified from the
+ **index. See \code{herringAggregate()} and \code{herringAtLength()} for more
+ detail.
 
  If \code{BIOMASS} or \code{ABUNDANCE} data is missing when the other is
  present, the missing field is filled in based on the relationship
  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
- 
- **Fixed high dogfish
-  # Change ABUNDANCE = inf to ABUNDANCE = 1
+
+ Abnormally high dogfish biomass estimates (> 8000 kg at the set level) are
+ replaced with \code{BIOMASS = 0} kg.
+
+ Abundance estimates of \code{Inf} in 2012 are replaced with \code{ABUNDANCE
+ = 1}.
+
+ Code will stop if any \code{BIOMASS} or \code{ABUNDANCE} estimates are
+ \code{NA}.
+
+ Estimates of zero are replaced with small values: \code{BIOMASS = 0} is
+ replaced with \code{BIOMASS = 0.01}; \code{ABUNDANCE = 0} is replaced with
+ \code{ABUNDANCE = 1}
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

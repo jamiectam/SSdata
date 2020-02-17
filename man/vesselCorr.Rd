@@ -25,5 +25,5 @@ Called by \code{biomassData()} to apply vessel correction factor
  western (From Manning 1985; reinforced by SJ Smith 2013).
 }
 \references{
-Original code by DD.
+Modified code from AC's ExtractIndicators/R/vesselCorrection.R.
 }

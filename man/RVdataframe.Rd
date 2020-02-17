@@ -18,8 +18,7 @@ RVdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
 
 \item{areas}{Areas for which to format data. A separate dataframe will be
 exported for each area. Default is \code{areas = c("shelf", "esswss",
-"nafo", "strat")}. If \code{update_RV = TRUE}, user must define
-\code{channel} in the global environment (see \code{Details}).}
+"nafo", "strat")}.}
 
 \item{lengthbased}{Logical parameter indicating whether to return stratified
 length-based data (\code{lengthBased = TRUE}) or not length-based data
@@ -33,7 +32,8 @@ applied at the set level.}
 \item{update_RV}{Logical parameter indicating whether to run
 \code{extractRV()}. Extracting the abundance and biomass data for all years
 and areas is time consuming, so if data is already extracted, use the
-default \code{update_biomass = FALSE}.}
+default \code{update_biomass = FALSE}.  If \code{update_RV = TRUE}, user
+must define \code{channel} in the global environment (see \code{Details}).}
 
 \item{csv}{Logical value indicating whether to export dataframe as a .csv
 file. Default is \code{csv = TRUE}.}
@@ -42,26 +42,27 @@ file. Default is \code{csv = TRUE}.}
 file. Default is \code{rdata = TRUE}.}
 }
 \value{
-This function creates a directory path/output/RV to save the exported
- data. In the RV folder is a folder for each entry in \code{area}. In each
- area folder is a csv and/or Rdata file for the specified combination of
- \code{lengthbased} and \code{qadjusted} (object name \code{RVdata}. These
- files are formatted for the \code{marindicators} package.
+This function creates a directory path/output/RV/area for each entry
+ in \code{area}. In each area folder is a csv and/or Rdata file for the
+ specified combination of \code{lengthbased} and \code{qadjusted} (object
+ name \code{RVdata}). These files are formatted for the \code{marindicators}
+ package.
 
  If \code{lengthbased = TRUE}, then \code{RVdata} has 6 columns: \code{YEAR},
- \code{SPECIES}, \code{ID}, \code{LENGTH}, \code{BIOMASS}, and
- \code{ABUNDANCE}.
+ \code{SPECIES}, \code{ID}, \code{LENGTH} (cm), \code{BIOMASS} (kg), and
+ \code{ABUNDANCE} (numbers).
 
  If \code{lengthbased = FALSE}, then \code{RVdata} has 5 columns:
- \code{YEAR}, \code{SPECIES}, \code{ID}, \code{BIOMASS}, and
- \code{ABUNDANCE}.
+ \code{YEAR}, \code{SPECIES}, \code{ID}, \code{BIOMASS} (kg), and
+ \code{ABUNDANCE} (numbers).
 }
 \description{
-This function imports data exported by \code{stratifyBiomass()},
- adds column \code{YEAR}, and binds all years together.
+**Double check that this sums over species for each year This
+ function imports data exported by \code{stratifyBiomass()}, adds column
+ \code{YEAR}, and binds all years together.
 }
 \details{
-If \code{update_LW = TRUE}, user must define \code{channel =
+If \code{update_RV = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
  channel must have access to the XXXX databases.
 }
