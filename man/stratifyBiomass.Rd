@@ -56,15 +56,9 @@ This function creates a directory to store the stratified data:
 }
 \description{
 Stratifies the biomass and abundance estimates based on the
- weights in "stratweights.csv" in the extra info folder. User can choose
- whether to return length-based and/or q-corrected values.
-}
-\details{
-Requires file path/extra info/stratweights/csv. stratweights.csv has
- two columns: \code{STRAT} and the corresponding \code{AREA}. Each
- \code{AREA} is converted to tow units using the conversion \code{TOW UNITS =
- AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
- AREA/((41./6080.2)*1.75)} after 1981.
+ weights in \code{strat_weights} (type \code{?strat_weights} into the console
+ for more information). User can choose whether to return length-based and/or
+ q-corrected values.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/stratifyBiomass.R

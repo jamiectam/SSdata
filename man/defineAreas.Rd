@@ -2,7 +2,7 @@
 % Please edit documentation in R/defineAreas.R
 \name{defineAreas}
 \alias{defineAreas}
-\title{Assigns area ID based on strata}
+\title{Assigns area ID based on strata.}
 \usage{
 defineAreas(dat, area)
 }

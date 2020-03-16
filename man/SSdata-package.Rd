@@ -9,17 +9,17 @@
 
 \details{ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This channel must have access to the XXXX database to extract fishery independent data and the NAFO, ZIF, and MARFIS databases to extract the commercial landings data.
 
-XX excel files in folder path/extra info are required to extract and format the code:
+XX Rdata files are stored in the package to extract and format the code:
 
 1. Herring files (**update this when sorted out**).
 
-2. stratweights.csv has two columns: \code{STRAT} and the corresponding \code{AREA}. Each \code{AREA} is converted to tow units in \code{stratifyBiomass()}, \code{herringAggregate()}, and \code{herringAtLength()} using the conversion \code{TOW UNITS = AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS = AREA/((41./6080.2)*1.75)} after 1981.
+2. strat_weights has two columns: \code{STRAT} and the corresponding \code{AREA}. Each \code{AREA} is converted to tow units in \code{stratifyBiomass()}, \code{herringAggregate()}, and \code{herringAtLength()} using the conversion \code{TOW UNITS = AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS = AREA/((41./6080.2)*1.75)} after 1981.
 
-3. SpeciesCodes.csv has three columns: \code{ALLCODES} (commercial species code), \code{SPECIES} (research vessel species code), and \code{PROPORTION_OF_LANDINGS} (for species that have one \code{ALLCODES} value but more than one \code{SPECIES} value). Used in \code{LANDdataframe()} to replace commercial species codes with research vessel species codes (for use with \code{marindicators}).
+3. species_codes has three columns: \code{ALLCODES} (commercial species code), \code{SPECIES} (research vessel species code), and \code{PROPORTION_OF_LANDINGS} (for species that have one \code{ALLCODES} value but more than one \code{SPECIES} value). Used in \code{LANDdataframe()} to replace commercial species codes with research vessel species codes (for use with \code{marindicators}).
 
-4. landingsgroupings.csv links NAFO sub-unit to area \code{ID} for the spatial scales of interest (Shelf, ESS/WSS, NAFO divisions). Applied in \code{LANDdataframe()}.
+4. landings_groupings links NAFO sub-unit to area \code{ID} for the spatial scales of interest (Shelf, ESS/WSS, NAFO divisions). Applied in \code{LANDdataframe()}.
 
-5. commercialGroups.csv links species to commercial groups. 11 columns: \code{ALLCODES} (commercial species code), \code{ALLNAMES} (commercial species name), and a column for each commercial group (\code{GROUNDFISH}, \code{CLUPEIDS}, \code{INVERTEBRATES}, \code{FORAGE}, \code{FLATFISH}, \code{FINFISH}, \code{LARGE_PELAGICS}, \code{GADOIDS}, \code{SKATES}). Species that belong to a commercial group have a \code{1} in the corresponding column (and \code{NA} in all other columns). Applied in \code{extractLAND()}.
+5. commercial_groups links species to commercial groups. 11 columns: \code{ALLCODES} (commercial species code), \code{ALLNAMES} (commercial species name), and a column for each commercial group (\code{GROUNDFISH}, \code{CLUPEIDS}, \code{INVERTEBRATES}, \code{FORAGE}, \code{FLATFISH}, \code{FINFISH}, \code{LARGE_PELAGICS}, \code{GADOIDS}, \code{SKATES}). Species that belong to a commercial group have a \code{1} in the corresponding column (and \code{NA} in all other columns). Applied in \code{extractLAND()}.
 }
 
 \references{

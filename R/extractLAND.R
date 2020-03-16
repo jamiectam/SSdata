@@ -5,8 +5,7 @@
 #'  = ###)} in the global environment. This channel must have access to the
 #'  NAFO, ZIF, and MARFIS databases.
 #'
-#'  Species are assigned to commercial landings groups based on the file
-#'  path/extra info/commercialGroups.csv
+#'  Species are assigned to commercial landings groups based on \code{commercial_groups}.
 #'@inheritParams biomassData
 #'@param path  Filepath indicating where to create the folder to store the
 #'  extracted data.
@@ -88,7 +87,8 @@ extractLAND <- function(path, e.year) {
   zdat <- ZIF()
   mdat <- MARFIS()
   
-  nam <- read.csv(paste(path, "/extra info/commercialGroups.csv", sep = ""))
+  #nam <- read.csv(paste(path, "/extra info/commercialGroups.csv", sep = ""))
+  nam <- commercial_groups # commercial_groups is a data object saved in the package. Type ?commercial_groups for more info
   names(nam)[1] <-'SPECIES'
   dat <- rbind(ndat, zdat, mdat)
   dat<-dat[with(dat,order(SPECIES,YEAR)),]

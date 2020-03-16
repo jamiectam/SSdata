@@ -30,8 +30,7 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
  = ###)} in the global environment. This channel must have access to the
  NAFO, ZIF, and MARFIS databases.
 
- Species are assigned to commercial landings groups based on the file
- path/extra info/commercialGroups.csv
+ Species are assigned to commercial landings groups based on \code{commercial_groups}.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/getLandings.R

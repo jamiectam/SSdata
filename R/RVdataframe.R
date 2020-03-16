@@ -44,7 +44,11 @@ RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
   
   
   # Extract and stratify biomass data if it hasn't been done already
-  if(update_RV) extractRV(path = path, s.year = s.year, e.year = e.year, areas = areas)
+  if(update_RV) {
+    extractRV(path = path, s.year = s.year, e.year = e.year, 
+              areas = areas, 
+              lengthbased = lengthbased, qadjusted = qadjusted)
+  }
   
   years <- c(s.year:e.year)
   

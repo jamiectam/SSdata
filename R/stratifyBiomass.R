@@ -1,12 +1,8 @@
 #'@title Stratifies biomass and abundance estimates
 #'@description Stratifies the biomass and abundance estimates based on the
-#'  weights in "stratweights.csv" in the extra info folder. User can choose
-#'  whether to return length-based and/or q-corrected values.
-#'@details Requires file path/extra info/stratweights/csv. stratweights.csv has
-#'  two columns: \code{STRAT} and the corresponding \code{AREA}. Each
-#'  \code{AREA} is converted to tow units using the conversion \code{TOW UNITS =
-#'  AREA/((35./6080.2)*1.75)} until 1981 and \code{TOW UNITS =
-#'  AREA/((41./6080.2)*1.75)} after 1981.
+#'  weights in \code{strat_weights} (type \code{?strat_weights} into the console
+#'  for more information). User can choose whether to return length-based and/or
+#'  q-corrected values.
 #'@inheritParams biomassData
 #'@param path Filepath indicating where to create folder to store the stratified
 #'  data.
@@ -53,7 +49,8 @@ stratifyBiomass <- function(path, s.year, e.year, lengthbased, qadjusted,
   
   print("running stratifyBiomass()")
   
-  st.weights  <- read.csv(file.path(path, "extra info", "stratweights.csv"))  # strata weights
+  #st.weights  <- read.csv(file.path(path, "extra info", "stratweights.csv"))  # strata weights
+  st.weights <- strat_weights
   
   out.fp <- file.path(path, "data", "stratified") # where to export data: path/data/stratified
   yr <- s.year:e.year                             # years to stratify  
@@ -129,6 +126,7 @@ stratifyBiomass <- function(path, s.year, e.year, lengthbased, qadjusted,
       spo <- unique(out$SPECIES)
       dat <- dat[!dat$SPECIES %in% spo,]
       dat$FLEN <- -99
+      
       out <- rbind(out,dat)
       
       dat <- out

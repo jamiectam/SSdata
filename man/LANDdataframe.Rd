@@ -52,11 +52,13 @@ If \code{update_LAND = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
  channel must have access to the NAFO, ZIF, and MARFIS databases.
 
- Area ID's are assiged from the file path/extra info/landingsgroupings.csv.
+ Area ID's are assiged from \code{landings_groupings} (type
+ \code{?landings_groupings} into the console for more info).
 
- Commercial and research vessel species codes are matched from the file
- path/extra info/SpeciesCodes.csv. The function accounts for the proportion
- of landings of species with more than one RV code but one commercial code.
+ Commercial and research vessel species codes are matched from
+ \code{species_codes} (type \code{?species_codes} into the console for more
+ info). The function accounts for the proportion of landings of species with
+ more than one RV code but one commercial code.
 }
 \references{
 Original code by DD.
