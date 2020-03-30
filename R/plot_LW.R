@@ -5,7 +5,7 @@
 #'  the \code{catch_coefs} table in \code{biomassData()}.
 #'@param species Species code for which to extract data.
 #'@return A plot of weight (g) vs. length (cm).
-#'@references Modeified from AC's code in script qBiomass.
+#'@references Modified from AC's code in script qBiomass.
 #'@importFrom utils write.csv
 #'@export
 

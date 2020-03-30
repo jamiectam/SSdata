@@ -6,14 +6,16 @@
  package}
 \usage{
 LANDdataframe(path, areas = c("shelf", "esswss", "nafo"), update_LAND,
-  e.year = NULL, csv = TRUE, rdata = TRUE)
+  e.year, csv = TRUE, rdata = TRUE)
 }
 \arguments{
 \item{path}{The filepath to the data folder created by
 \code{extractLandings()}.}
 
-\item{areas}{Areas of interest. A separate landings dataframe will be exported
-for each area. Default is \code{areas = c("shelf", "esswss", "nafo")}}
+\item{areas}{Areas (spatial scales) of interest. Options are "shelf",
+"esswss", "nafo", or any combination of those three. A separate landings
+dataframe will be exported for each area. Default is \code{areas =
+c("shelf", "esswss", "nafo")}}
 
 \item{update_LAND}{Logical parameter indicating whether to run
 \code{extractLAND()}. This may be time consuming, so if data is already
@@ -35,24 +37,22 @@ This function creates a directory path/output/Landings and stores the
  landings dataframe for each area in area_land.RData (object name is
  \code{land}) and/or area_land.csv. The dataframe has 4 columns: \code{ID}
  (the area ID), \code{YEAR}, \code{SPECIES} (the research vessel species
- code) and \code{CATCH} (UNITS). These files are formatted for the
+ code) and \code{CATCH} (****UNITS of the corresponding species caught in the
+ corresponding year and area). These files are formatted for the
  \code{marindicators} package.
 }
 \description{
-**added a line to sum catch of each species for each year + area.
- DO I NEED THIS OR IS IT DONE IN marindicators?
-
- This function imports data from path/data/landings.landings.RData, attaches
- labels for the spatial scales of interest (shelf, ESS/WSS, and/or NAFO
- divisions) in column \code{ID}, and replaces commercial species codes with
- the research vessel species codes.
+This function imports data from
+ path/data/landings/landings.RData, attaches labels for the spatial scales of
+ interest (shelf, ESS/WSS, and/or NAFO divisions) in column \code{ID}, and
+ replaces commercial species codes with the research vessel species codes.
 }
 \details{
 If \code{update_LAND = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
  channel must have access to the NAFO, ZIF, and MARFIS databases.
 
- Area ID's are assiged from \code{landings_groupings} (type
+ Area ID's are assigned from \code{landings_groupings} (type
  \code{?landings_groupings} into the console for more info).
 
  Commercial and research vessel species codes are matched from

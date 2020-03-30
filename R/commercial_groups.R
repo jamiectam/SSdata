@@ -14,6 +14,6 @@
 #'  name} \item{GROUNDFISH}{For example, a 1 in this column indicates the
 #'  corresponding species is included in commercial groundfish landings; an NA
 #'  indicates the species is not included in this group.}}
-#'@source These commerical groupings are from AC's script LandByGroup.R, u <-
+#'@source These commercial groupings are from AC's script LandByGroup.R, u <-
 #'  sqlQuery(channel,paste("select * from gomezc.indiseas_allcodes")).
 "commercial_groups"

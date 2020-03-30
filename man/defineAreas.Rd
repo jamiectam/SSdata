@@ -12,10 +12,8 @@ entries corresponding to the strata on the Scotian Shelf (e.g., values from
 440 to 495).}
 
 \item{area}{Character string indicating the spatial scale for which to assign
-areas IDs. Options are: \code{"strat"}, \code{"nafo"}, \code{"esswss"},
-\code{"shelf"}, \code{"indiseas"}, \code{"pollockwest"},
-\code{"pollockeast"}, \code{"unit2redfish"}, \code{"unit3redfish"},
-\code{"silverhake"}.}
+areas IDs. Options are: \code{"strat"}, \code{"nafo"}, \code{"esswss"}, or
+\code{"shelf"}.}
 }
 \value{
 The function returns \code{dat} with an extra column: \code{ID}

@@ -36,14 +36,12 @@ Creates directories to store extracted data.
  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
  \code{QBIOMASS} and \code{QABUNDANCE}.
 
- Length-based data is stored in path/data/length/.  This folder includes an
+ Length-based data is stored in path/data/length/. This folder includes an
  RData file for each year called num_biom_at_length_year.RData (object name
  \code{out}). \code{out} has 10 columns: \code{MISSION}, \code{SETNO},
  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
  \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
  length in 1 cm increments.
-
- Biomass units are: kg Abundance units are: numbers
 }
 \description{
 Extracts and exports annual q-adjusted and not q-adjusted,
@@ -55,18 +53,15 @@ Extracts and exports annual q-adjusted and not q-adjusted,
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
  = ###)} in the global environment. This channel must have access to the
- XXX database.
+ gscat, gsdet, gsinf, and gs_lengths tables from the groundfish database and
+ the nafo_strat table from the mfd_stomach database.
 
- The research vessel survey is not used as an index of herring in 4X (the
- Western Scotian Shelf). Here, the survey observations for 4X herring are
- replaced with biomass and abundance estimates de-stratified from the
- **index. See \code{herringAggregate()} and \code{herringAtLength()} for more
- detail.
+ Units: biomass - kg; abundance - numbers; length - cm.
 
  If \code{BIOMASS} or \code{ABUNDANCE} data is missing when the other is
  present, the missing field is filled in based on the relationship
  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
- from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
+ from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} is not
  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
 
  Abnormally high dogfish biomass estimates (> 8000 kg at the set level) are
@@ -80,7 +75,7 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 
  Estimates of zero are replaced with small values: \code{BIOMASS = 0} is
  replaced with \code{BIOMASS = 0.01}; \code{ABUNDANCE = 0} is replaced with
- \code{ABUNDANCE = 1}
+ \code{ABUNDANCE = 1}.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

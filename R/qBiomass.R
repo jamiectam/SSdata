@@ -1,7 +1,10 @@
-#'@title Applies length-based q-adjustment to biomass and abundance data at the
-#'  set level
-#'@description Applies length-based q-adjustments to biomass and abundance data
-#'  at the set level and returns to the results to \code{biomassData()}.
+#'@title Applies q-adjustment to biomass and abundance data at the set level
+#'@description Applies q-adjustments to biomass and abundance data at the set
+#'  level and returns to the results to \code{biomassData()}. Length-based
+#'  adjustments are applied for several functional groups; not length-based
+#'  adjustments are applied for some species; no adjustment is applied for
+#'  remaining species.
+#'
 #'@details \code{qBiomass()} is called by the \code{biomassData()} function.
 #'  Arguments are supplied to \code{qBiomass()} from the \code{catch_coefs}
 #'  table (SQL call to gomezc.indiseas_catchability_coeffs), which includes
@@ -10,14 +13,15 @@
 #'  to \code{biomassData()}.
 #'
 #'  \code{qBiomass()} obtains numbers (\code{ABUNDANCE}) at length for the given
-#'  \code{species} for 1 cm intervals from the XXXX database.
+#'  \code{species} for 1 cm intervals from the groundfish database.
 #'
 #'  Biomass estimates are based on the length-weight relationship:
 #'  \deqn{ln(Weight) = a + ln(Length) * b} The function obtains length and
-#'  weight data for \code{species} in \code{year} from XXXX and estimates
-#'  \eqn{a} and \eqn{b}. The average weight of fish at each length is then
-#'  estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the biomass
-#'  estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
+#'  weight data for \code{species} in \code{year} from the groundfish database
+#'  and estimates \eqn{a} and \eqn{b}. The average weight of fish at each length
+#'  is then estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the
+#'  biomass estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} *
+#'  Weight_{Avg}}.
 #'
 #'  If there are less than 100 length-weight observations in the database for
 #'  the given \code{species} in \code{year}, the function will include
@@ -28,8 +32,11 @@
 #'
 #'  \bold{q-correction}
 #'
-#'  q is calculated based on the arguments \code{fun_group} and \code{q} using
-#'  the equation: \deqn{q =
+#'  q is calculated based on the arguments \code{fun_group} and \code{q}.
+#'
+#'  If \code{q} > \code{0} and \code{fun_group} = \code{NA}, then a single q is applied for
+#'  all length classes. Otherwise, \code{q} is calculated using the equation:
+#'  \deqn{q =
 #'  g1*(exp(a1+b1*(\code{LENGTH}*\code{lencorr})))/(1+exp(a1+b1*(\code{LENGTH}*\code{lencorr})))}
 #'   where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each
 #'  \code{fun_group}, \code{len_corr} is an argument provided by
@@ -44,14 +51,16 @@
 #'  is supplied by \code{biomassData()}.
 #'@param year Year to calculate the data, supplied by \code{biomasData()}
 #'@param fun_group Functional group from the \code{catch_coeffs} table. This
-#'  argument is supplied by \code{biomassData()}.
+#'  argument is supplied by \code{biomassData()}. If \code{fun_group} = \code{NA}, then
+#'  this \code{q} values is applied to all length classes.
 #'@param q Initial q-correction from the \code{catch_coeffs} table. This
-#'  argument is supplied by \code{biomassData()}.
+#'  argument is supplied by \code{biomassData()}. If \code{q} > \code{0} and
+#'  \code{fun_group} = \code{NA}, then this \code{q} value is applied to all length
+#'  classes.
 #'@param len_corr Initial length correction from the \code{catch_coeffs} table.
 #'  This argument is supplied by \code{biomassData()}.
 #'@return Returns the not q-adjusted and q-adjusted length-based biomass and
-#'  abundance to \code{biomassData()} for species that have length-based
-#'  correction factors.
+#'  abundance to \code{biomassData()} for species that have q-adjustments.
 #'@references Modified code from AC's ExtractIndicators/R/qBiomass (function
 #'  \code{biomass_q_adj()})
 #'@importFrom stats coef
@@ -109,18 +118,18 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
     if(run==TRUE) {
       
       #order the data by fork length
-      aa<-aa[order(aa$FLEN),]
+      aa <- aa[order(aa$FLEN),]
       
-      #adjust the catch at lengths by appropriate q and length correction
-      
-      #single q for species
+      # Not length-based q for some species (e.g., herring,)
       if(is.na(fun_group) && q > 0) {
         aa$q <- q
         aa$corCatch <- aa$CATCH/aa$q
         aa$model<-paste('single_q-', q)
       } 
       
-      #cod length based q
+      # adjust the catch at lengths by appropriate q and length correction
+      
+      # cod length-based q
       if(fun_group == 'cod' && q == 0) {
         a1 = -5.14
         b1 = 0.141
@@ -130,7 +139,7 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model <- 'cod'
       }
       
-      #haddock length based q
+      # haddock length-based q
       if(fun_group == 'haddock'&& q == 0) {	
         a1=-2.80
         b1 = 0.0661
@@ -140,7 +149,7 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model <- 'haddock'
       }
       
-      #pelagic gadoids length based q
+      # pelagic gadoids length-based q
       if(fun_group == 'pg'&& q == 0 ) {
         a1 = -4.61
         b1 = 0.0789
@@ -150,8 +159,8 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model<-'pg'
       }
       
-      #demersal gadoids length based q
-      if(fun_group=='dg'&& q==0) {
+      # demersal gadoids length-based q
+      if(fun_group == 'dg'&& q == 0) {
         a1=-3.50
         b1=0.0925
         g1=0.968	
@@ -160,8 +169,8 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model<-'dg'
       }
       
-      #flat fish length based q
-      if(fun_group=='ff'&& q==0) {
+      # flatfish length-based q
+      if(fun_group == 'ff'&& q == 0) {
         a1=-4.35
         b1=0.111
         g1=0.831	
@@ -170,8 +179,8 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model<-'ff'
       }
       
-      # ling length based q	 	
-      if(fun_group=='ling' && q==0) {
+      # ling length-based q	 	
+      if(fun_group == 'ling' && q == 0) {
         a1=-13.9
         b1=0.193
         g1=1.66	
@@ -180,8 +189,8 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
         aa$model<-'ling'
       }
       
-      # small pelagics length based q from H.Benoit
-      if(fun_group=='sp' && q==0) {
+      # small pelagics length-based q from H.Benoit
+      if(fun_group == 'sp' && q == 0) {
         a1=-17.7165
         b1=0.175
         g1=37710.7	
@@ -221,7 +230,4 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
     }
   }
 }
-
-
-
 

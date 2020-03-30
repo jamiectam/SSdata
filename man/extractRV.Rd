@@ -24,9 +24,11 @@ biomass and abundance data (\code{qadjusted = TRUE}) or not q-adjusted
 biomass and abundance data (\code{qadjusted = FALSE}). q-adjustments are
 applied at the set level.}
 
-\item{areas}{Areas for which to extract and stratify the fishery independent
-survey data. A separate dataframe will be exported for each area. Default is
-\code{areas = c("shelf", "esswss", "nafo", "strat")}.}
+\item{areas}{Areas (spatial scales) for which to extract and stratify the
+fishery independent survey data. A separate dataframe will be exported for
+each area. Options are "shelf", "esswss", "nafo", "strat", or any
+combination of those four.  Default is \code{areas = c("shelf", "esswss",
+"nafo", "strat")}.}
 }
 \value{
 Returns data extracted by \code{biomassData()} and stratified by
@@ -52,13 +54,13 @@ Returns data extracted by \code{biomassData()} and stratified by
  data/stratified/folder/. The name of "folder" depends on the arguments
  \code{lengthbased} and \code{qadjusted}:
 
- if(lengthBased & qadjusted), then folder is named "lengthbased_qadj"
+ if(lengthbased & qadjusted), then folder is named "lengthbased_qadj"
 
- if(lengthBased & !qadjusted), then folder is named "lengthbased_notqadj"
+ if(lengthbased & !qadjusted), then folder is named "lengthbased_notqadj"
 
- if(!lengthBased & qadjusted), then folder is named "notlengthbased_qadj"
+ if(!lengthbased & qadjusted), then folder is named "notlengthbased_qadj"
 
- if(!lengthBased & qadjusted), then folder is named "notlengthbased_notqadj"
+ if(!lengthbased & qadjusted), then folder is named "notlengthbased_notqadj"
 
  Inside "folder" is a folder for each entry in \code{area}. Within each area
  folder is a .RData file for each year from \code{s.year} to \code{e.year}
@@ -77,8 +79,9 @@ Runs \code{biomassData()} to extract survey data and
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
- = ###)} in the global environment. This channel must have access to the XXXX
- databases.
+ = ###)} in the global environment. This channel must have access to the
+ gscat, gsdet, gsinf, and gs_lengths tables from the groundfish database and
+ the nafo_strat table from the mfd_stomach database.
 }
 \references{
 Original code by DD.

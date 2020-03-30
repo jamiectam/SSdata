@@ -6,9 +6,10 @@
 #'@inheritParams biomassData
 #'@param path Filepath indicating where to create folder to store the stratified
 #'  data.
-#'@param areas Areas for which to stratify the fishery independent survey data.
-#'  A separate dataframe will be exported for each area. Default is \code{areas
-#'  = c("shelf", "esswss", "nafo", "strat")}.
+#'@param areas Areas (spatial scales) for which to stratify the fishery
+#'  independent survey data. A separate dataframe will be exported for each
+#'  area. Options are "shelf", "esswss", "nafo", "strat", or any combination of
+#'  the four. Default is \code{areas = c("shelf", "esswss", "nafo", "strat")}.
 #'@param lengthbased Logical parameter indicating whether to return stratified
 #'  length-based data (\code{lengthBased = TRUE}) or not length-based data
 #'  (\code{lengthBased = FALSE}).
@@ -49,7 +50,7 @@ stratifyBiomass <- function(path, s.year, e.year, lengthbased, qadjusted,
   
   print("running stratifyBiomass()")
   
-  #st.weights  <- read.csv(file.path(path, "extra info", "stratweights.csv"))  # strata weights
+  # strata weights
   st.weights <- strat_weights
   
   out.fp <- file.path(path, "data", "stratified") # where to export data: path/data/stratified

@@ -4,7 +4,7 @@
 #'  ESS/WSS, NAFO divisions, and/or strata) in column \code{ID}.
 #'@details If \code{update_LW = TRUE}, user must define \code{channel =
 #'  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
-#'  channel must have access to the XXXX databases.
+#'  channel must have access to the gsinf and gsdet tables from the groundfish database.
 #'@inheritParams RVdataframe
 #'@param path The filepath to the data folder created by \code{extractLW()}.
 #'@param update_LW Logical parameter indicating whether to run
@@ -28,7 +28,6 @@ LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
   # Extract length-weight data if it hasn't been extracted already
   if(update_LW) extractLW(path = path, s.year = s.year, e.year = e.year)
   
-  
   years <- c(s.year:e.year)
   allData <- NULL
   
@@ -51,7 +50,6 @@ LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo
   
   # now use the defineAreas function to identify which spatial scale each strata belongs to
   # i.e., add "ID" column to data
-
   for(j in 1:length(areas)){
     
     areas.j = areas[j]

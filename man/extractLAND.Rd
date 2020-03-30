@@ -14,23 +14,35 @@ extracted data.}
 }
 \value{
 This function creates directory path/data/landings and stores file
- landings.Rdata (object name is \code{landings}). \code{landings} has 14
+ landings.RData (object name is \code{landings}). \code{landings} has 14
  columns: \code{SPECIES}, \code{ALLNAMES}, \code{YEAR}, \code{NAFO_UNIT},
- \code{CATCH} (UNITS), and 9 landings groups. A value of \code{1} in a
+ \code{CATCH} (***UNITS), and 9 landings groups. A value of \code{1} in a
  landings group column indicates that the corresponding \code{SPECIES}
  belongs to that group. Species may belong to more than one group. Species
  codes are the commercial landings codes.
 }
 \description{
-Extracts commercial landings data from NAFO (1968 - 1985), ZIF
+Extracts commercial landings data from NAFO (1970 - 1985), ZIF
  (1986 - 2002) and MARFIS (2003 - present) databases.
 }
 \details{
-User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
- = ###)} in the global environment. This channel must have access to the
- NAFO, ZIF, and MARFIS databases.
+March 30, 2020: made some modifications to the MARFIS() function
+ (added e.year.marfis). Need to be on VPN to Make sure this works!
 
- Species are assigned to commercial landings groups based on \code{commercial_groups}.
+ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
+ in the global environment. This channel must have access to the NAFO, ZIF,
+ and MARFIS databases.
+
+ Units: tonnes (***I think)
+
+ This function defines and then calls three functions: \code{NAFO()},
+ \code{ZIF()}, and \code{MARFIS()}.
+
+ Extracts data from 1970 to \code{e.year}.
+
+ Species are assigned to commercial landings groups based on
+ \code{commercial_groups}. Type \code{?commercial_groups} for more
+ information.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/getLandings.R

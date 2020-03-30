@@ -2,8 +2,8 @@
 #'@description Extracts annual length-weight data from fishery independent
 #'  surveys on the Scotian Shelf.
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
-#'  = ###)} in the global environment. This channel must have access to the XXXX
-#'  database.
+#'  = ###)} in the global environment. This channel must have access to the
+#'  gsinf and gsdet tables from the groundfish database.
 #'@inheritParams biomassData
 #'@param path Filepath indicating where to create folders to store the extracted
 #'  data.

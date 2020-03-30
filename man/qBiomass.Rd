@@ -2,8 +2,7 @@
 % Please edit documentation in R/qBiomass.R
 \name{qBiomass}
 \alias{qBiomass}
-\title{Applies length-based q-adjustment to biomass and abundance data at the
- set level}
+\title{Applies q-adjustment to biomass and abundance data at the set level}
 \usage{
 qBiomass(species, year, fun_group = NA, q = 0, len_corr = 1)
 }
@@ -14,22 +13,27 @@ is supplied by \code{biomassData()}.}
 \item{year}{Year to calculate the data, supplied by \code{biomasData()}}
 
 \item{fun_group}{Functional group from the \code{catch_coeffs} table. This
-argument is supplied by \code{biomassData()}.}
+argument is supplied by \code{biomassData()}. If \code{fun_group} = \code{NA}, then
+this \code{q} values is applied to all length classes.}
 
 \item{q}{Initial q-correction from the \code{catch_coeffs} table. This
-argument is supplied by \code{biomassData()}.}
+argument is supplied by \code{biomassData()}. If \code{q} > \code{0} and
+\code{fun_group} = \code{NA}, then this \code{q} value is applied to all length
+classes.}
 
 \item{len_corr}{Initial length correction from the \code{catch_coeffs} table.
 This argument is supplied by \code{biomassData()}.}
 }
 \value{
 Returns the not q-adjusted and q-adjusted length-based biomass and
- abundance to \code{biomassData()} for species that have length-based
- correction factors.
+ abundance to \code{biomassData()} for species that have q-adjustments.
 }
 \description{
-Applies length-based q-adjustments to biomass and abundance data
- at the set level and returns to the results to \code{biomassData()}.
+Applies q-adjustments to biomass and abundance data at the set
+ level and returns to the results to \code{biomassData()}. Length-based
+ adjustments are applied for several functional groups; not length-based
+ adjustments are applied for some species; no adjustment is applied for
+ remaining species.
 }
 \details{
 \code{qBiomass()} is called by the \code{biomassData()} function.
@@ -40,14 +44,15 @@ Applies length-based q-adjustments to biomass and abundance data
  to \code{biomassData()}.
 
  \code{qBiomass()} obtains numbers (\code{ABUNDANCE}) at length for the given
- \code{species} for 1 cm intervals from the XXXX database.
+ \code{species} for 1 cm intervals from the groundfish database.
 
  Biomass estimates are based on the length-weight relationship:
  \deqn{ln(Weight) = a + ln(Length) * b} The function obtains length and
- weight data for \code{species} in \code{year} from XXXX and estimates
- \eqn{a} and \eqn{b}. The average weight of fish at each length is then
- estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the biomass
- estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} * Weight_{Avg}}.
+ weight data for \code{species} in \code{year} from the groundfish database
+ and estimates \eqn{a} and \eqn{b}. The average weight of fish at each length
+ is then estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the
+ biomass estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} *
+ Weight_{Avg}}.
 
  If there are less than 100 length-weight observations in the database for
  the given \code{species} in \code{year}, the function will include
@@ -58,8 +63,11 @@ Applies length-based q-adjustments to biomass and abundance data
 
  \bold{q-correction}
 
- q is calculated based on the arguments \code{fun_group} and \code{q} using
- the equation: \deqn{q =
+ q is calculated based on the arguments \code{fun_group} and \code{q}.
+
+ If \code{q} > \code{0} and \code{fun_group} = \code{NA}, then a single q is applied for
+ all length classes. Otherwise, \code{q} is calculated using the equation:
+ \deqn{q =
  g1*(exp(a1+b1*(\code{LENGTH}*\code{lencorr})))/(1+exp(a1+b1*(\code{LENGTH}*\code{lencorr})))}
   where \eqn{g1}, \eqn{a1}, and \eqn{b1} are hard-coded for each
  \code{fun_group}, \code{len_corr} is an argument provided by

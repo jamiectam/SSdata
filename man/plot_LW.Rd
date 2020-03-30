@@ -20,5 +20,5 @@ Plots length-weight data for given species and year. Displays the
  estimated values of a and b.
 }
 \references{
-Modeified from AC's code in script qBiomass.
+Modified from AC's code in script qBiomass.
 }

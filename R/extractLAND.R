@@ -1,18 +1,30 @@
 #'@title Extracts commercial landings data from historic and current databases
-#'@description Extracts commercial landings data from NAFO (1968 - 1985), ZIF
+#'@description Extracts commercial landings data from NAFO (1970 - 1985), ZIF
 #'  (1986 - 2002) and MARFIS (2003 - present) databases.
-#'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
-#'  = ###)} in the global environment. This channel must have access to the
-#'  NAFO, ZIF, and MARFIS databases.
+#'@details March 30, 2020: made some modifications to the MARFIS() function
+#'  (added e.year.marfis). Need to be on VPN to Make sure this works!
 #'
-#'  Species are assigned to commercial landings groups based on \code{commercial_groups}.
+#'  User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
+#'  in the global environment. This channel must have access to the NAFO, ZIF,
+#'  and MARFIS databases.
+#'
+#'  Units: tonnes (***I think)
+#'
+#'  This function defines and then calls three functions: \code{NAFO()},
+#'  \code{ZIF()}, and \code{MARFIS()}.
+#'
+#'  Extracts data from 1970 to \code{e.year}.
+#'
+#'  Species are assigned to commercial landings groups based on
+#'  \code{commercial_groups}. Type \code{?commercial_groups} for more
+#'  information.
 #'@inheritParams biomassData
 #'@param path  Filepath indicating where to create the folder to store the
 #'  extracted data.
 #'@return This function creates directory path/data/landings and stores file
-#'  landings.Rdata (object name is \code{landings}). \code{landings} has 14
+#'  landings.RData (object name is \code{landings}). \code{landings} has 14
 #'  columns: \code{SPECIES}, \code{ALLNAMES}, \code{YEAR}, \code{NAFO_UNIT},
-#'  \code{CATCH} (UNITS), and 9 landings groups. A value of \code{1} in a
+#'  \code{CATCH} (***UNITS), and 9 landings groups. A value of \code{1} in a
 #'  landings group column indicates that the corresponding \code{SPECIES}
 #'  belongs to that group. Species may belong to more than one group. Species
 #'  codes are the commercial landings codes.
@@ -26,8 +38,9 @@ extractLAND <- function(path, e.year) {
   
   print("running extractLAND()")
   
+  # NAFO: 1970 - 1985
   NAFO <- function(area=paste("4VS","4VN","4X","4W", sep="','")) {
-    y <- 1968:1985
+    y <- 1970:1985
     out <- list()
     
     for( i in 1:length(y)) {
@@ -39,12 +52,11 @@ extractLAND <- function(path, e.year) {
     
     dat <- do.call(rbind, out)
     return(dat)		
-    }
+  }
   
-  #ZO  - 1986:2002
+  # ZIF: 1986 - 2002
   ZIF <- function (area=paste("4VS","4VN","4X","4W",sep="','")) {
     #match the zif data dictionary landings 
-    
     y <- 1986:2002
     out <- list()
     for( i in 1:length(y)) {
@@ -64,16 +76,16 @@ extractLAND <- function(path, e.year) {
     }
     dat <- do.call(rbind,out)
     return(dat)		
-    }
+  }
   
-  
-  MARFIS <- function(area=paste("4V","4X","4W",sep="','")) {
+  # MARFIS: 2003 - e.year
+  MARFIS <- function(area=paste("4V","4X","4W",sep="','"), e.year.marfis) {
     #match the vdc marfis landings
     
     data <- sqlQuery(channel, paste("select year_fished year,unit_area nafo_unit, marfis2allcodes species,sum(round(rnd_weight_kgs/1000,4)) catch
                                     from mfd_obfmi.marfis_catch_effort d, gomezc.indiseas_marfis2allcodes a
                                     where upper(nafo_div) in ('",area,"') and d.species_code=a.marfis
-                                    and year_fished between '2003' and ",e.year,"
+                                    and year_fished between '2003' and ",e.year.marfis,"
                                     and category_desc not in 'OTHER'
                                     GROUP BY year_fished ,unit_area, marfis2allcodes
                                     ;",sep=""))
@@ -83,11 +95,12 @@ extractLAND <- function(path, e.year) {
     return(data)
   }
   
+  # call each function defined above
   ndat <- NAFO()
   zdat <- ZIF()
-  mdat <- MARFIS()
+  mdat <- MARFIS(e.year.marfis = e.year)
   
-  #nam <- read.csv(paste(path, "/extra info/commercialGroups.csv", sep = ""))
+  # format data
   nam <- commercial_groups # commercial_groups is a data object saved in the package. Type ?commercial_groups for more info
   names(nam)[1] <-'SPECIES'
   dat <- rbind(ndat, zdat, mdat)
@@ -100,11 +113,12 @@ extractLAND <- function(path, e.year) {
   land[land$NAFO_UNIT=='4VSA','NAFO_UNIT'] <- '4VSB'
   land[land$NAFO_UNIT=='4VSS','NAFO_UNIT'] <- '4VSU'
   land[land$NAFO_UNIT=='4VNN','NAFO_UNIT'] <- '4VN'
+  
+  # export data
   fp = file.path(path,'data','landings')
   dir.create(fp, recursive=T, showWarnings=F)
-  
   landings <- land
-  save(landings, file = file.path(fp,"landings.RData"))
+  save(landings, file = file.path(fp, "landings.RData"))
  
 }   
 

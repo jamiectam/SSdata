@@ -6,18 +6,15 @@
 #'  (before stratification).
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 #'  = ###)} in the global environment. This channel must have access to the
-#'  XXX database.
+#'  gscat, gsdet, gsinf, and gs_lengths tables from the groundfish database and
+#'  the nafo_strat table from the mfd_stomach database.
 #'
-#'  The research vessel survey is not used as an index of herring in 4X (the
-#'  Western Scotian Shelf). Here, the survey observations for 4X herring are
-#'  replaced with biomass and abundance estimates de-stratified from the
-#'  **index. See \code{herringAggregate()} and \code{herringAtLength()} for more
-#'  detail.
+#'  Units: biomass - kg; abundance - numbers; length - cm.
 #'
 #'  If \code{BIOMASS} or \code{ABUNDANCE} data is missing when the other is
 #'  present, the missing field is filled in based on the relationship
 #'  \eqn{Weight_{Avg} = \code{BIOMASS}/\code{ABUNDANCE}}. \eqn{Weight_{Avg}} is
-#'  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} if not
+#'  from a sql call to "mean_wts_for_fill_in." If \eqn{Weight_{Avg}} is not
 #'  available for a species, it is assumed that \eqn{Weight_{Avg} = 0.5}.
 #'
 #'  Abnormally high dogfish biomass estimates (> 8000 kg at the set level) are
@@ -31,7 +28,7 @@
 #'
 #'  Estimates of zero are replaced with small values: \code{BIOMASS = 0} is
 #'  replaced with \code{BIOMASS = 0.01}; \code{ABUNDANCE = 0} is replaced with
-#'  \code{ABUNDANCE = 1}
+#'  \code{ABUNDANCE = 1}.
 #'@param path Filepath indicating where to create folders to store the extracted
 #'  data.
 #'@param s.strat Stratum for which to begin data extraction. Default is
@@ -53,14 +50,13 @@
 #'  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
 #'  \code{QBIOMASS} and \code{QABUNDANCE}.
 #'
-#'  Length-based data is stored in path/data/length/.  This folder includes an
+#'  Length-based data is stored in path/data/length/. This folder includes an
 #'  RData file for each year called num_biom_at_length_year.RData (object name
 #'  \code{out}). \code{out} has 10 columns: \code{MISSION}, \code{SETNO},
 #'  \code{SPECIES}, \code{YEAR}, \code{STRAT}, \code{BIOMASS}, \code{ABUNDANCE},
 #'  \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
 #'  length in 1 cm increments.
 #'
-#'  Biomass units are: kg Abundance units are: numbers
 #'@references Modified code from AC's ExtractIndicators/R/biomassData.R
 #'@importFrom stats aggregate
 #'@importFrom reshape melt
@@ -70,24 +66,16 @@
 biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
                         vessel.correction = TRUE) {
   
+  # display error message if s.strat or e.start are < 440 or > 495
   if(s.strat < 440 | s.strat > 495 | e.strat < 440 | e.strat > 495) {
     stop("error: s.strat or e.strat is outside of the Scotian Shelf")
   }
   
+  # vector of years of interest
   yr <- s.year:e.year
   
-  ### This is a relic of when 4X herring biomass was removed and replaced with VPA/Acoustic estimates
-  # Call herringAggregate to return the de-stratified length-based 4X herring index
-  # This will replace the RV observations of length-based herring in 4X
-  # her.length <- herringAtLength(path = path, s.year = s.year, e.year = e.year)
-  #her.length <- her.length[her.length$ABUNDANCE >0,] # DD added
-  
-  # Call herringAggregate to return the de-stratified 4X herring index
-  # This will replace the RV observations of 4X herring
-  # her.agg <- herringAggregate(path = path, s.year = s.year, e.year = e.year)
-  # her.agg <- her.agg[her.agg$ABUNDANCE>0,] # why not need this for her.length?
-  
-  for(i in 1:length(yr)) {
+  # start loop over years
+  for(i in 1:length(yr)) {            
     
     # At Length ---------------------------------------------------------------
     
@@ -106,36 +94,23 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
                                q = catch_coefs[j, 3], len_corr = catch_coefs[j, 4], year = yr[i]) 
     }
     out <- as.data.frame(do.call(rbind, outputs))
-    
-    # This section removes 4X herring estimates. Delete!
-    # f <- out[out$SPEC==60 & out$STRAT >= 470 & out$STRAT <= 495,]  # extract 4X herring observations
-    # out <- out[setdiff(rownames(out), rownames(f)),]               # discard 4X herring observations from out
-    # mi <- unique(out$MISSION)
-    # h.length <- her.length[her.length$MISSION %in% mi,]            # keep herring observations from year i (based on MISSION)                         
-    # 
-     out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]  # remove lat/long columns
-    # out <- rbind(out, h.length)                                           # add in herring observations from herringAtLength
+    out <- out[, -which(names(out) %in% c('YDDMMSS', 'XDDMMSS'))]  # remove lat/long columns
     
     if(vessel.correction) out <- vesselCorr(out)                   # apply vessel correction
     
     # Export length based data (biomass and abundance at 1 cm intervals)
     fna <- paste(path,"/data/length/",sep="")
     dir.create(fna, recursive = T, showWarnings = F)
-    fna <- paste(fna,"num_biom_at_length",yr[i],".RData",sep="")
+    fna <- paste(fna, "num_biom_at_length", yr[i], ".RData", sep = "")
     save(out, file = fna, compress = T)
     
     # End of At Length ------------------------------------------------------
     
     # Begin aggregate ---------------------------------------------------------
-    # Sum over length (aggregated biomass/abundance of species that have length-based q)
+    # Sum over length (aggregated biomass & abundance of species that have length-based q)
     ag.out <- aggregate(cbind(QBIOMASS, BIOMASS, QABUNDANCE, ABUNDANCE) ~ 
                           YEAR + STRAT + MISSION + SETNO + SPECIES, 
                         data = out, FUN = sum)
-    
-    # Remove 4X herring at length
-    # f <- ag.out[ag.out$SPEC == 60 & ag.out$STRAT >= 470 & ag.out$STRAT <= 495,]
-    # ag.out <- ag.out[setdiff(rownames(ag.out),rownames(f)),]
-    # ag.out <- ag.out[ag.out$BIOMASS>0,]
     
     # Extract table with 7 columns:
     ## MISSION, SETNO, STRAT, YEAR, SPEC, ABUNDANCE, BIOMASS
@@ -151,22 +126,13 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     dat[is.na(dat$ABUNDANCE), 'ABUNDANCE'] <- 0
     dat[is.na(dat$BIOMASS), 'BIOMASS'] <- 0
     
-    # Remove 4X herring data from dat
-    # f <-dat[dat$SPEC==60 & dat$STRAT>=470 & dat$STRAT<=495,]
-    # dat <- dat[setdiff(rownames(dat),rownames(f)),]
-    # mi <- unique(dat$MISSION)
-    
-    # Add in the aggregated 4X herrring calculated from herringAggregate()
-    # h.agg <- her.agg[her.agg$MISSION %in% mi,]
-    # dat <- rbind(dat, h.agg)
-    
     # Handle the missing biomass or abudance data where the other is present
     # by using mean weight = biomass/abundance
     if(any(dat$ABUNDANCE == 0 | dat$BIOMASS==0)) {
       
       wt <- sqlQuery(channel, paste("select * from mean_wts_for_fill_in;",sep="")) # table of mean fish weight ("SPEC" and "MEAN_WT_FISH", 640 observations)
-      dat <- merge(dat, wt, by = c('SPEC'), all.x = T)                            # merge dat and wt
-      dat[is.na(dat$MEAN_WT_FISH), 'MEAN_WT_FISH'] <- 0.5                         # if mean fish weight is NA, assign mean weight of 0.5
+      dat <- merge(dat, wt, by = c('SPEC'), all.x = T)                             # merge dat and wt
+      dat[is.na(dat$MEAN_WT_FISH), 'MEAN_WT_FISH'] <- 0.5                          # if mean fish weight is NA, assign mean weight of 0.5
       
       if(any(dat$ABUNDANCE == 0)) {
         dat$ABUNDANCE[dat$ABUNDANCE == 0] <- dat$BIOMASS[dat$ABUNDANCE==0]/dat$MEAN_WT_FISH[dat$ABUNDANCE==0] # abundance = biomass/mean weight  			

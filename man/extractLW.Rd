@@ -26,8 +26,8 @@ Extracts annual length-weight data from fishery independent
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
- = ###)} in the global environment. This channel must have access to the XXXX
- database.
+ = ###)} in the global environment. This channel must have access to the
+ gsinf and gsdet tables from the groundfish database.
 }
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R

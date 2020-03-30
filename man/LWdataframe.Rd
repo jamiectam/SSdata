@@ -14,9 +14,10 @@ LWdataframe(path, s.year, e.year, areas = c("shelf", "esswss", "nafo",
 
 \item{e.year}{Year for which to end data extraction.}
 
-\item{areas}{Areas for which to format data. A separate dataframe will be
-exported for each area. Default is \code{areas = c("shelf", "esswss",
-"nafo", "strat")}.}
+\item{areas}{Areas (spatial scales) for which to format data. A separate
+dataframe will be exported for each area. Options are "shelf", "esswss",
+"nafo", "strat", or any combination of the four. Default is \code{areas =
+c("shelf", "esswss", "nafo", "strat")}.}
 
 \item{update_LW}{Logical parameter indicating whether to run
 \code{extractLW()}. This can be time consuming, so if LW data is already
@@ -46,7 +47,7 @@ This function imports data from path/data/lenwgt adds column
 \details{
 If \code{update_LW = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
- channel must have access to the XXXX databases.
+ channel must have access to the gsinf and gsdet tables from the groundfish database.
 }
 \references{
 Original code by DD.

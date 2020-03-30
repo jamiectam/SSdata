@@ -8,16 +8,21 @@
 #'  extract and format the survey, length-weight, and commercial landings data.
 #'
 #'  User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
-#'  in the global environment. This channel must have access to the XXXX (RV)
-#'  and NAFO, ZIF, and MARFIS (commercial) databases.
+#'  in the global environment. This channel must have access to the gscat,
+#'  gsdet, gsinf, and gs_lengths tables from the groundfish database and the
+#'  nafo_strat table from the mfd_stomach database for the fishery-independent
+#'  data and the NAFO, ZIF, and MARFIS databases for the commercial data.
 #'@inheritParams biomassData
 #'@param path Filepath indicating where to create folders to store the output.
 #'@param s.year Year for which to begin data compilation.
 #'@param e.year Year for which to end data compilation.
-#'@param areas.RV Areas for which to compile fishery independent data. Default
-#'  is \code{areas.RV = c("strat", "nafo", "esswss", "shelf")}.
-#'@param areas.land Areas for which to compile commercial landings data. Default
-#'  is \code{areas.land = c("nafo", "esswss", "shelf")}.
+#'@param areas.RV Areas (spatial scales) for which to compile fishery
+#'  independent data. Options are "strat", "nafo", "esswss", "shelf", or any
+#'  combination of those four. Default is \code{areas.RV = c("strat", "nafo",
+#'  "esswss", "shelf")}.
+#'@param areas.land Areas (spatial scales) for which to compile commercial
+#'  landings data. Options are "nafo", "esswss", "shelf", or any combination of
+#'  those three.  Default is \code{areas.land = c("nafo", "esswss", "shelf")}.
 #'@param csv Logical value indicating whether to export dataframe as a .csv
 #'  file. Default is \code{csv = TRUE}.
 #'@param rdata Logical value indicating whether to export dataframe as a .RData
@@ -27,15 +32,16 @@
 #'
 #'  \code{RVdataframe} creates a directory path/output/RV. In the RV folder is a
 #'  folder for each entry in \code{areas.RV}. In each area folder is a csv
-#'  and/or Rdata file for the specified combination of \code{lengthbased} and
+#'  and/or RData file for the specified combination of \code{lengthbased} and
 #'  \code{qadjusted}.
 #'
 #'  \code{LWdataframe()} creates a directory path/output/LengthWeight. In the
-#'  LengthWeight folder is a csv and/or Rdata file with length-weight data for
+#'  LengthWeight folder is a csv and/or RData file with length-weight data for
 #'  each area in \code{areas.RV}.
 #'
 #'  \code{LANDdatafrmae()} creates a directory path/output/Landings: In the
-#'  Landings folder is a csv and/or Rdata file for each area in /code{areas.land}.
+#'  Landings folder is a csv and/or RData file for each area in
+#'  /code{areas.land}.
 #'@references Original code by DD.
 #'@export
 
@@ -73,7 +79,7 @@ compileDataframes <- function(path, s.year, e.year, areas.RV = c("strat", "nafo"
               areas = areas.RV, update_LW = TRUE, csv = csv, rdata = rdata)
   
   # Extract and format landings data
-  LANDdataframe(path = path, areas = areas.land, update_LAND = TRUE, csv = csv, rdata = rdata)
+  LANDdataframe(path = path, areas = areas.land, update_LAND = TRUE, e.year = e.year, csv = csv, rdata = rdata)
   
   
 }

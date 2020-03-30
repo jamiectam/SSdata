@@ -7,7 +7,7 @@
 vesselCorr(x)
 }
 \arguments{
-\item{x}{Fishery indepdendet survey data as extracted by \code{biomassData()}.}
+\item{x}{Fishery indepdendent survey data as extracted by \code{biomassData()}.}
 }
 \value{
 This function returns the corrected biomass and abundance data to
@@ -16,13 +16,6 @@ This function returns the corrected biomass and abundance data to
 \description{
 Called by \code{biomassData()} to apply vessel correction factor
  to key species.
-
- Notes from AC: correct for different survey vessels (after, L.P Fanning
- 1985): to obtain Alfred Needler comparable units: Lady Hammond (1982) and
- Alfred Needler (1983 to present) used a Western IIA Otter Trawl whereas The
- A.T. Cameron used a Yankee 35 ft trawl between 1970 to 1981 for total
- numbers need to use appropriate wingspreads 35ft for yankee and 41ft for
- western (From Manning 1985; reinforced by SJ Smith 2013).
 }
 \references{
 Modified code from AC's ExtractIndicators/R/vesselCorrection.R.
