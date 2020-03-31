@@ -63,3 +63,7 @@ If \code{update_LAND = TRUE}, user must define \code{channel =
 \references{
 Original code by DD.
 }
+\seealso{
+Other LAND functions: \code{\link{extractLAND}}
+}
+\concept{LAND functions}

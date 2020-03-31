@@ -61,6 +61,7 @@
 #'@importFrom stats aggregate
 #'@importFrom reshape melt
 #'@importFrom RODBC sqlQuery
+#'@family RV functions
 #'@export
 
 biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,

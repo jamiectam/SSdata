@@ -29,6 +29,7 @@
 #'@importFrom RODBC sqlQuery
 #'@importFrom RODBC odbcConnect
 #'@importFrom RODBC odbcClose
+#'@family LAND functions
 #'@export
 
 extractLAND <- function(path, e.year) {

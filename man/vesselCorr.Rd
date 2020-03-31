@@ -20,3 +20,9 @@ Called by \code{biomassData()} to apply vessel correction factor
 \references{
 Modified code from AC's ExtractIndicators/R/vesselCorrection.R.
 }
+\seealso{
+Other RV functions: \code{\link{RVdataframe}},
+  \code{\link{biomassData}}, \code{\link{extractRV}},
+  \code{\link{qBiomass}}, \code{\link{stratifyBiomass}}
+}
+\concept{RV functions}

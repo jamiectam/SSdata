@@ -12,8 +12,9 @@
 #'  (object name \code{wt}). \code{wt} has 4 columns: \code{STRAT},
 #'  \code{SPECIES}, \code{FLEN} (length in cm), \code{FWT} (weight in g).
 #'@references Modified code from AC's ExtractIndicators/R/biomassData.R
-#'@export
 #'@importFrom RODBC sqlQuery
+#'@family LW functions
+#'@export
 
 
 extractLW <- function(path, s.year, e.year) {

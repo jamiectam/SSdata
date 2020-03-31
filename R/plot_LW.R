@@ -7,6 +7,7 @@
 #'@return A plot of weight (g) vs. length (cm).
 #'@references Modified from AC's code in script qBiomass.
 #'@importFrom utils write.csv
+#'@family LW functions
 #'@export
 
 plot_LW <- function(species, year){

@@ -64,3 +64,9 @@ Stratifies the biomass and abundance estimates based on the
 \references{
 Modified code from AC's ExtractIndicators/R/stratifyBiomass.R
 }
+\seealso{
+Other RV functions: \code{\link{RVdataframe}},
+  \code{\link{biomassData}}, \code{\link{extractRV}},
+  \code{\link{qBiomass}}, \code{\link{vesselCorr}}
+}
+\concept{RV functions}

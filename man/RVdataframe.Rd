@@ -71,3 +71,9 @@ If \code{update_RV = TRUE}, user must define \code{channel =
 \references{
 Original code by DD.
 }
+\seealso{
+Other RV functions: \code{\link{biomassData}},
+  \code{\link{extractRV}}, \code{\link{qBiomass}},
+  \code{\link{stratifyBiomass}}, \code{\link{vesselCorr}}
+}
+\concept{RV functions}

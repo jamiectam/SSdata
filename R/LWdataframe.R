@@ -20,8 +20,9 @@
 #'  package.
 #'@references Original code by DD.
 #'@importFrom utils write.csv
+#'@family LW functions
 #'@export
-#'
+
 LWdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"),
                         update_LW = FALSE, csv = TRUE, rdata = TRUE){
   

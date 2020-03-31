@@ -30,7 +30,7 @@
 #'  \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
 #'  length in 1 cm increments.
 #'
-#'  From\code{stratifyBiomass()}:
+#'  From \code{stratifyBiomass()}:
 #'
 #'  data/stratified/folder/. The name of "folder" depends on the arguments
 #'  \code{lengthbased} and \code{qadjusted}:
@@ -55,6 +55,7 @@
 #'  \code{ID}, \code{BIOMASS} (kg), and \code{ABUNDANCE} (numbers).
 #'
 #'@references Original code by DD.
+#'@family RV functions
 #'@export
 
 extractRV <- function(path, s.year, e.year, lengthbased, qadjusted,

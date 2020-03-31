@@ -32,3 +32,8 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R
 }
+\seealso{
+Other LW functions: \code{\link{LWdataframe}},
+  \code{\link{plot_LW}}
+}
+\concept{LW functions}

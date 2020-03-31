@@ -80,3 +80,9 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 \references{
 Modified code from AC's ExtractIndicators/R/biomassData.R
 }
+\seealso{
+Other RV functions: \code{\link{RVdataframe}},
+  \code{\link{extractRV}}, \code{\link{qBiomass}},
+  \code{\link{stratifyBiomass}}, \code{\link{vesselCorr}}
+}
+\concept{RV functions}

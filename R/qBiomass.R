@@ -21,7 +21,7 @@
 #'  and estimates \eqn{a} and \eqn{b}. The average weight of fish at each length
 #'  is then estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the
 #'  biomass estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} *
-#'  Weight_{Avg}}.
+#'  Weight_{Avg}}
 #'
 #'  If there are less than 100 length-weight observations in the database for
 #'  the given \code{species} in \code{year}, the function will include
@@ -67,6 +67,7 @@
 #'@importFrom graphics curve
 #'@importFrom graphics title
 #'@importFrom RODBC sqlQuery
+#'@family RV functions
 #'@export
 
 qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {

@@ -26,12 +26,9 @@ Extracts commercial landings data from NAFO (1970 - 1985), ZIF
  (1986 - 2002) and MARFIS (2003 - present) databases.
 }
 \details{
-March 30, 2020: made some modifications to the MARFIS() function
- (added e.year.marfis). Need to be on VPN to Make sure this works!
-
- User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)}
- in the global environment. This channel must have access to the NAFO, ZIF,
- and MARFIS databases.
+User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
+ = ###)} in the global environment. This channel must have access to the
+ NAFO, ZIF, and MARFIS databases.
 
  Units: tonnes (***I think)
 
@@ -47,3 +44,7 @@ March 30, 2020: made some modifications to the MARFIS() function
 \references{
 Modified code from AC's ExtractIndicators/R/getLandings.R
 }
+\seealso{
+Other LAND functions: \code{\link{LANDdataframe}}
+}
+\concept{LAND functions}

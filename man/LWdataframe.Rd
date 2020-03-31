@@ -52,3 +52,8 @@ If \code{update_LW = TRUE}, user must define \code{channel =
 \references{
 Original code by DD.
 }
+\seealso{
+Other LW functions: \code{\link{extractLW}},
+  \code{\link{plot_LW}}
+}
+\concept{LW functions}

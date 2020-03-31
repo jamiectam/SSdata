@@ -49,7 +49,7 @@ Returns data extracted by \code{biomassData()} and stratified by
  \code{QBIOMASS} and \code{QABUNDANCE}, and \code{FLEN}, where \code{FLEN} is
  length in 1 cm increments.
 
- From\code{stratifyBiomass()}:
+ From \code{stratifyBiomass()}:
 
  data/stratified/folder/. The name of "folder" depends on the arguments
  \code{lengthbased} and \code{qadjusted}:
@@ -86,3 +86,9 @@ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
 \references{
 Original code by DD.
 }
+\seealso{
+Other RV functions: \code{\link{RVdataframe}},
+  \code{\link{biomassData}}, \code{\link{qBiomass}},
+  \code{\link{stratifyBiomass}}, \code{\link{vesselCorr}}
+}
+\concept{RV functions}

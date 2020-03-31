@@ -39,6 +39,7 @@
 #'
 #'@references Original code by DD.
 #'@importFrom utils write.csv
+#'@family RV functions
 #'@export
 
 RVdataframe <- function(path, s.year, e.year, areas = c("shelf", "esswss", "nafo", "strat"), 

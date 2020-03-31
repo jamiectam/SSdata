@@ -22,3 +22,8 @@ Plots length-weight data for given species and year. Displays the
 \references{
 Modified from AC's code in script qBiomass.
 }
+\seealso{
+Other LW functions: \code{\link{LWdataframe}},
+  \code{\link{extractLW}}
+}
+\concept{LW functions}

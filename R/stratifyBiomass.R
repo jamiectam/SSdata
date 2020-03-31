@@ -42,6 +42,7 @@
 #'  \code{out} has 4 columns if \code{lengthbased = FALSE}: \code{SPECIES},
 #'  \code{ID}, \code{BIOMASS}, and \code{ABUNDANCE}.
 #'@references Modified code from AC's ExtractIndicators/R/stratifyBiomass.R
+#'@family RV functions
 #'@export
 
 

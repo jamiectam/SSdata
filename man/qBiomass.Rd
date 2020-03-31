@@ -52,7 +52,7 @@ Applies q-adjustments to biomass and abundance data at the set
  and estimates \eqn{a} and \eqn{b}. The average weight of fish at each length
  is then estimated using: \deqn{Weight_{Avg} = exp(a + ln(Length)*b)} and the
  biomass estimate is: \deqn{\code{BIOMASS} = \code{ABUNDANCE} *
- Weight_{Avg}}.
+ Weight_{Avg}}
 
  If there are less than 100 length-weight observations in the database for
  the given \code{species} in \code{year}, the function will include
@@ -82,3 +82,9 @@ Applies q-adjustments to biomass and abundance data at the set
 Modified code from AC's ExtractIndicators/R/qBiomass (function
  \code{biomass_q_adj()})
 }
+\seealso{
+Other RV functions: \code{\link{RVdataframe}},
+  \code{\link{biomassData}}, \code{\link{extractRV}},
+  \code{\link{stratifyBiomass}}, \code{\link{vesselCorr}}
+}
+\concept{RV functions}

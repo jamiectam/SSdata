@@ -5,6 +5,7 @@
 #'@param x Fishery indepdendent survey data as extracted by \code{biomassData()}.
 #'@return This function returns the corrected biomass and abundance data to
 #'  function \code{biomassData()}.
+#'@family RV functions
 #'@references Modified code from AC's ExtractIndicators/R/vesselCorrection.R.
 
 
