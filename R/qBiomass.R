@@ -74,7 +74,7 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
   
   area = "4VWX"
   
-  #Checking to see if there is enough data to even bother with this species
+  # Check to see if there is enough data to bother with this species
   initial <- sqlQuery(channel,paste("select count(distinct c.mission||','||c.setno||','||",species,"||','||fshno) from groundfish.gsdet c, groundfish.gsinf i where i.mission=c.mission and i.setno=c.setno and to_char(sdate,'mm') in ('06','07','08') and strat in (select distinct strat from mflib.gsmgt where unit in ('",area,"')) and spec=",species,";",sep=""))
   go <- ifelse(initial>30,TRUE,FALSE)
   if(go==TRUE) {

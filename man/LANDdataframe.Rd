@@ -50,7 +50,10 @@ This function imports data from
 \details{
 If \code{update_LAND = TRUE}, user must define \code{channel =
  odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. This
- channel must have access to the NAFO, ZIF, and MARFIS databases.
+ channel must have access to: the nafo_summary and nafo_area_codes tables
+ from the COMLAND database, the sub_trips_XXXX and identified_catches tables
+ from the cl database, the marfis_catch_effort table from mfd_obfmi database,
+ and the indiseas_marfis2allcodes table from the gomezc database.
 
  Area ID's are assigned from \code{landings_groupings} (type
  \code{?landings_groupings} into the console for more info).

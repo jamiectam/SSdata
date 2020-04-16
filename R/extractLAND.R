@@ -1,16 +1,19 @@
 #'@title Extracts commercial landings data from historic and current databases
-#'@description Extracts commercial landings data from NAFO (1970 - 1985), ZIF
+#'@description Extracts commercial landings data from NAFO (1968 - 1985), ZIF
 #'  (1986 - 2002) and MARFIS (2003 - present) databases.
 #'@details User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
-#'  = ###)} in the global environment. This channel must have access to the
-#'  NAFO, ZIF, and MARFIS databases.
+#'  = ###)} in the global environment. This channel must have access to: the
+#'  nafo_summary and nafo_area_codes tables from the COMLAND database, the
+#'  sub_trips_XXXX and identified_catches tables from the cl database, the
+#'  marfis_catch_effort table from mfd_obfmi database, and the
+#'  indiseas_marfis2allcodes table from the gomezc database.
 #'
-#'  Units: tonnes (***I think)
+#'  Units: tonnes 
 #'
 #'  This function defines and then calls three functions: \code{NAFO()},
 #'  \code{ZIF()}, and \code{MARFIS()}.
 #'
-#'  Extracts data from 1970 to \code{e.year}.
+#'  Extracts data from 1968 to \code{e.year}.
 #'
 #'  Species are assigned to commercial landings groups based on
 #'  \code{commercial_groups}. Type \code{?commercial_groups} for more
@@ -36,9 +39,9 @@ extractLAND <- function(path, e.year) {
   
   print("running extractLAND()")
   
-  # NAFO: 1970 - 1985
+  # NAFO: 1968 - 1985
   NAFO <- function(area=paste("4VS","4VN","4X","4W", sep="','")) {
-    y <- 1970:1985
+    y <- 1968:1985
     out <- list()
     
     for( i in 1:length(y)) {
@@ -116,6 +119,7 @@ extractLAND <- function(path, e.year) {
   fp = file.path(path,'data','landings')
   dir.create(fp, recursive=T, showWarnings=F)
   landings <- land
+  # landings <- landings/1000 # this will convert from tonnes to kg so that landings and RV survey are in same units
   save(landings, file = file.path(fp, "landings.RData"))
  
 }   

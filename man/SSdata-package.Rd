@@ -7,7 +7,24 @@
 \description{ \pkg{SSdata} provides functions to extract fishery independent (summer research vessel groundfish survey) and commercial landings data for the Scotian Shelf from DFO-Maritimes databases. Following Bundy, Gomez, and Cook (2017), fishery independent data can be extracted for four different spatial scales: Shelf, ESS/WSS, NAFO divisions,and strata. Commercial landings can be extracted for three spatial scales: Shelf, ESS/WSS, and NAFO divisions. Dataframes can be formatted for use in the \code{marindicators} package.
  }
 
-\details{ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment. To extract fishery independent data, this channel must have access to the gscat, gsdet, gsinf, and gs_lengths tables from the groundfish database and the nafo_strat table from the mfd_stomach database. To extract commercial landings data, the channel must have access to the NAFO, ZIF, and MARFIS databases to extract the commercial landings data.
+\details{ User must define \code{channel = odbcConnect("ptran", uid = ###, pwd = ###)} in the global environment using the 'RODBC' package. This channel must have access to tables from several databases (Table 1).
+
+Table 1: Databases and tables for which the user's channel must have access to extract fisheries independent and commercial landings data.
+\tabular{ll}{
+  \bold{DATABASE} \tab \bold{TABLES}  \cr
+  \bold{Fishery independent data} \tab \cr
+  groundfish \tab gscat, gsdet, gsinf, gs_lengths \cr
+  mfd_stomach \tab nafo_strat \cr
+  \bold{Commercial landings data} \tab \cr
+  comland \tab nafo_summary, nafo_area_codes  \cr
+  cl \tab sub_trips_XXXX\eqn{^1}, identified_catches  \cr
+  mfd_obfmi database \tab marfis_catch_effort  \cr
+  gomezc database \tab indiseas_marfis2allcodes 
+
+  }
+  
+\eqn{^1} _XXXX represents the 4-digit year; e.g., sub_trips_1999
+
 
 Four RData files are stored in the package to help extract and format the data:
 

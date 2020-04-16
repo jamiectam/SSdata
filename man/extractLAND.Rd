@@ -22,20 +22,23 @@ This function creates directory path/data/landings and stores file
  codes are the commercial landings codes.
 }
 \description{
-Extracts commercial landings data from NAFO (1970 - 1985), ZIF
+Extracts commercial landings data from NAFO (1968 - 1985), ZIF
  (1986 - 2002) and MARFIS (2003 - present) databases.
 }
 \details{
 User must define \code{channel = odbcConnect("ptran", uid = ###, pwd
- = ###)} in the global environment. This channel must have access to the
- NAFO, ZIF, and MARFIS databases.
+ = ###)} in the global environment. This channel must have access to: the
+ nafo_summary and nafo_area_codes tables from the COMLAND database, the
+ sub_trips_XXXX and identified_catches tables from the cl database, the
+ marfis_catch_effort table from mfd_obfmi database, and the
+ indiseas_marfis2allcodes table from the gomezc database.
 
- Units: tonnes (***I think)
+ Units: tonnes 
 
  This function defines and then calls three functions: \code{NAFO()},
  \code{ZIF()}, and \code{MARFIS()}.
 
- Extracts data from 1970 to \code{e.year}.
+ Extracts data from 1968 to \code{e.year}.
 
  Species are assigned to commercial landings groups based on
  \code{commercial_groups}. Type \code{?commercial_groups} for more
