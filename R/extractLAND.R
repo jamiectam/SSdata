@@ -24,7 +24,7 @@
 #'@return This function creates directory path/data/landings and stores file
 #'  landings.RData (object name is \code{landings}). \code{landings} has 14
 #'  columns: \code{SPECIES}, \code{ALLNAMES}, \code{YEAR}, \code{NAFO_UNIT},
-#'  \code{CATCH} (***UNITS), and 9 landings groups. A value of \code{1} in a
+#'  \code{CATCH} (tonnes), and 9 landings groups. A value of \code{1} in a
 #'  landings group column indicates that the corresponding \code{SPECIES}
 #'  belongs to that group. Species may belong to more than one group. Species
 #'  codes are the commercial landings codes.

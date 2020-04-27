@@ -75,6 +75,7 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
   area = "4VWX"
   
   # make a dummy table of lengths (this is to deal with the herring switch from cm to mm)
+  # it makes the code WAY slower. Leaving for now, but there may be a way to speed up!
   suppressWarnings(sqlQuery(channel,paste("DROP table gs_len;")))
   flens = data.frame(CLASS=1, FLEN=1:500)
   sqlSave(channel,dat=flens, tablename='GS_LEN',rownames=F)
@@ -96,7 +97,7 @@ qBiomass <- function(species, year, fun_group = NA, q = 0, len_corr = 1) {
 	 						(SELECT year, mission, setno, strat, dist, totwgt, sampwgt, flen,YDDMMSS,XDDMMSS
 	     						FROM
 	       							(SELECT flen
-	        							FROM gs_len
+	        							FROM GS_LEN
 	        							WHERE class=1
 	          							AND flen <=(SELECT max(flen) + 1
 	              										fROM groundfish.gsdet
