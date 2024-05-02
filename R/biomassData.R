@@ -116,9 +116,9 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     # Extract table with 7 columns:
     ## MISSION, SETNO, STRAT, YEAR, SPEC, ABUNDANCE, BIOMASS
     dat <- sqlQuery(channel,paste("select distinct i.mission,i.setno,i.strat, to_char(sdate,'yyyy') year, spec,sum(nvl(totno,0)*1.75/i.dist) Abundance,sum(nvl(totwgt,0)*1.75/i.dist) biomass from 
-							groundfish.gsinf i, groundfish.gscat c, mfd_stomach.nafo_strat sg where i.mission=c.mission and i.setno=c.setno and i.strat=sg.strat and to_char(sdate,'mm') in ('06','07','08') and
-							i.strat between '",s.strat,"' and '",e.strat,"' and type=1 and spec<9000 and to_char(sdate,'yyyy')=",yr[i],"
-							group by i.mission,i.setno,i.strat,slat , slong ,to_char(sdate,'yyyy'), spec;",sep=""))
+                            groundfish.gsinf i, groundfish.gscat c, gomezc.nafo_strat sg where i.mission=c.mission and i.setno=c.setno and i.strat=sg.strat and to_char(sdate,'mm') in ('06','07','08') and
+                            i.strat between '",s.strat,"' and '",e.strat,"' and type=1 and spec<9000 and to_char(sdate,'yyyy')=",yr[i],"
+                            group by i.mission,i.setno,i.strat,slat , slong ,to_char(sdate,'yyyy'), spec;",sep=""))
     
     # Fix high biomass estimate(s) for dogfish
     dat[dat$BIOMASS > 8000 & dat$SPEC != 220,'BIOMASS'] <- 0 # added in November 08, 2013 
