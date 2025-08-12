@@ -81,7 +81,9 @@ biomassData <- function(path, s.strat = 440, e.strat = 495, s.year, e.year,
     # At Length ---------------------------------------------------------------
     
     # Table with "SPECIES", "FUNGROUP", "Q", "LENCORR" (88 observations)
-    catch_coefs <- sqlQuery(channel, paste('select * from gomezc.indiseas_catchability_coeffs'))
+    # catch_coefs <- sqlQuery(channel, paste('select * from gomezc.indiseas_catchability_coeffs'))
+    # replaced sql database query with the file in the data folder
+    catch_coefs<-INDISEAS_CATCHABILITY_COEFFS
     catch_coefs[catch_coefs == 'NULL'] <- NA
     outputs <- list()
     m = 0
