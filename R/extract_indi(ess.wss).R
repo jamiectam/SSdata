@@ -1,8 +1,8 @@
 #channel <- odbcConnect('bank.canso3','mfd_stomach','bx547mj9')
 #channel
 #if reading from Catalina's computer:
-source('C:/Users/GomezC/Dropbox/Ecosystem Indicators/scripts to extract indicators/Catalina/indicatorSpaceTime.R')
-source('C:/Users/GomezC/Dropbox/Ecosystem Indicators/scripts to extract indicators/Catalina/amc helpers.R')
+# source('C:/Users/GomezC/Dropbox/Ecosystem Indicators/scripts to extract indicators/Catalina/indicatorSpaceTime.R')
+# source('C:/Users/GomezC/Dropbox/Ecosystem Indicators/scripts to extract indicators/Catalina/amc helpers.R')
 
 #source('C:/Documents and Settings/cooka/My Documents/Dropbox/Ecosystem Indicators/scripts to extract indicators/indicatorSpaceTime.R')
 #source('C:/Documents and Settings/cooka/My Documents/Dropbox/Ecosystem Indicators/scripts to extract indicators/amc helpers.R')
@@ -18,7 +18,7 @@ source('C:/Users/GomezC/Dropbox/Ecosystem Indicators/scripts to extract indicato
 
 A <- biodiversityData(s.year=1970,e.year=2012,q.corr=T,add.zero.sets=T)  
 #setwd("C:/Documents and Settings/cooka/My Documents/Dropbox/Ecosystem Indicators/outputs/ess.wss/q")
-setwd("C:/Users/GomezC/Dropbox/Ecosystem Indicators/outputs/Catalina")
+# setwd("C:/Users/GomezC/Dropbox/Ecosystem Indicators/outputs/Catalina")
 
 #Attribute: Resource Potential 
 # indi <- indicatorSpaceTime(dat=A,groups='ess.wss',indicator='resourcePotential',args=c('SKATES','BIOMASS'),stratified=T,means=F,totals=T)
@@ -128,8 +128,8 @@ indi <- indicatorSpaceTime(dat=A,groups='ess.wss',indicator='invCVBiomass',args=
 ##All other indicators different from resource potential
 ##Corrected for catchability
 
-C <- biodiversityData(s.year=1970,e.year=2012,q.corr=T,add.zero.sets=F)  
-setwd("C:/Users/GomezC/Dropbox/Ecosystem Indicators/outputs/Catalina/ess.wss/q")
+# C <- biodiversityData(s.year=1970,e.year=2012,q.corr=T,add.zero.sets=F)  
+# setwd("C:/Users/GomezC/Dropbox/Ecosystem Indicators/outputs/Catalina/ess.wss/q")
 #setwd("C:/Users/GomezC/Dropbox/Ecosystem Indicators/outputs/Catalina/ess.wss/richness without invertebrates")
 ##setwd("C:/Documents and Settings/cooka/My Documents/Dropbox/Ecosystem Indicators/outputs/ess.wss/q")
 
